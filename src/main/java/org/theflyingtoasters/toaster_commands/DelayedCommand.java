@@ -1,7 +1,4 @@
-package org.theflyingtoasters.commands;
-
-import org.theflyingtoasters.commands.interfaces.Command;
-import org.theflyingtoasters.commands.interfaces.CommandCallback;
+package org.theflyingtoasters.toaster_commands;
 
 public class DelayedCommand extends Command implements CommandCallback{
 	private double delay;
@@ -39,7 +36,7 @@ public class DelayedCommand extends Command implements CommandCallback{
 	}
 
 	@Override
-	public void commandFinished(Command cmd) {
+	public void call(Command cmd) {
 		endCommand();
 	}
 }

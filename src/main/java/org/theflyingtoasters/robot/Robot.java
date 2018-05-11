@@ -12,6 +12,9 @@ import org.theflyingtoasters.hardware.Intake;
 import org.theflyingtoasters.hardware.LED;
 import org.theflyingtoasters.hardware.Lift;
 import org.theflyingtoasters.hardware.PDP;
+import org.theflyingtoasters.toaster_commands.Command;
+import org.theflyingtoasters.toaster_commands.CommandCallback;
+import org.theflyingtoasters.toaster_commands.OpMode;
 import org.theflyingtoasters.utilities.Logging;
 
 import edu.wpi.cscore.UsbCamera;
@@ -419,7 +422,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
      * garbage collection and prints a message that the command is finished.
      */
     @Override
-    public void commandFinished(Command cmd) {
+    public void called(Command cmd) {
         if (cmd == autonomous) {
             autonomous = null;
             Logging.h("Auton finished!");

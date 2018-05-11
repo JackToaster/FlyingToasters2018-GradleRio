@@ -1,4 +1,4 @@
-package org.theflyingtoasters.commands.interfaces;
+package org.theflyingtoasters.toaster_commands;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import org.theflyingtoasters.utilities.Logging;
  * @author jackf
  *
  */
-public abstract class OpMode extends Command implements CommandCallback {
+public abstract class OpMode extends CommandGroup{
 	/**
 	 * A list of running commands. On periodic, all commands are updated.
 	 */
@@ -91,7 +91,7 @@ public abstract class OpMode extends Command implements CommandCallback {
 	 * Callback for commands that finish. Removes the command from the list of
 	 * commands.
 	 */
-	public void commandFinished(Command cmd) {
+	public void called(Command cmd) {
 		Logging.h("Removed command: " + cmd);
 		commands.remove(cmd);
 	}

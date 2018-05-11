@@ -1,9 +1,9 @@
 package org.theflyingtoasters.commands;
 
-import org.theflyingtoasters.commands.interfaces.Command;
-import org.theflyingtoasters.commands.interfaces.CommandCallback;
 import org.theflyingtoasters.hardware.Lift;
 import org.theflyingtoasters.robot.Robot;
+import org.theflyingtoasters.toaster_commands.Command;
+import org.theflyingtoasters.toaster_commands.CommandCallback;
 import org.theflyingtoasters.utilities.Logging;
 
 public class LiftCommand extends Command{

@@ -1,9 +1,9 @@
 package org.theflyingtoasters.commands.teleop;
 
-import org.theflyingtoasters.commands.interfaces.OpMode;
 import org.theflyingtoasters.hardware.Intake;
 import org.theflyingtoasters.hardware.Lift;
 import org.theflyingtoasters.robot.Robot;
+import org.theflyingtoasters.toaster_commands.OpMode;
 import org.theflyingtoasters.utilities.Logging;
 import org.theflyingtoasters.utilities.Utilities;
 

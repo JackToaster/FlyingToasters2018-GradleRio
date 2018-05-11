@@ -1,9 +1,9 @@
 package org.theflyingtoasters.commands;
 
-import org.theflyingtoasters.commands.interfaces.Command;
-import org.theflyingtoasters.commands.interfaces.CommandCallback;
 import org.theflyingtoasters.hardware.Intake;
 import org.theflyingtoasters.robot.Robot;
+import org.theflyingtoasters.toaster_commands.Command;
+import org.theflyingtoasters.toaster_commands.CommandCallback;
 
 /**
  * A command to intake/output a power cube.

@@ -1,6 +1,4 @@
-package org.theflyingtoasters.commands.interfaces;
-
-import org.theflyingtoasters.commands.DelayedCommand;
+package org.theflyingtoasters.toaster_commands;
 
 /**
  * abstract interface for a command.
@@ -12,7 +10,9 @@ public abstract class Command {
 	/**
 	 * the callback to call upon ending
 	 */
-	private CommandCallback callback;
+	private CommandCallback start;
+	private CommandCallback end;
+	
 	/**
 	 * the readable name of the command
 	 */
@@ -25,12 +25,9 @@ public abstract class Command {
 	 * 
 	 * @param callback
 	 *            the opmode/robot that the command is run by
-	 * @param name
-	 *            The name of the command, should be a descriptive/readable string.
 	 */
-	public Command(CommandCallback callback, String name) {
+	public Command(CommandCallback callback) {
 		this.callback = callback;
-		readableName = name;
 	}
 
 	/**
@@ -59,7 +56,7 @@ public abstract class Command {
 	 * before stop is called.
 	 */
 	protected void endCommand() {
-		callback.commandFinished(this);
+		end.call(this);
 	}
 	
 	public DelayedCommand delay(double delayTime) {

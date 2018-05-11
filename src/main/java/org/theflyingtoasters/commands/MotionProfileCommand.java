@@ -1,10 +1,10 @@
 package org.theflyingtoasters.commands;
 
-import org.theflyingtoasters.commands.interfaces.Command;
-import org.theflyingtoasters.commands.interfaces.CommandCallback;
 import org.theflyingtoasters.path_generation.Path;
 import org.theflyingtoasters.path_generation.Waypoint;
 import org.theflyingtoasters.robot.Robot;
+import org.theflyingtoasters.toaster_commands.Command;
+import org.theflyingtoasters.toaster_commands.CommandCallback;
 import org.theflyingtoasters.utilities.Logging;
 
 /**

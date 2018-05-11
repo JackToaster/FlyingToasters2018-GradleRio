@@ -1,4 +1,4 @@
-package org.theflyingtoasters.commands.interfaces;
+package org.theflyingtoasters.toaster_commands;
 
 /**
  * abstract interface for a command callback. This is used to detect when a
@@ -15,5 +15,5 @@ public interface CommandCallback {
 	 * @param cmd
 	 *            the command that has ended.
 	 */
-	public void commandFinished(Command cmd);
+	public void call(Command cmd);
 }
