@@ -1,6 +1,6 @@
 package org.theflyingtoasters.controllers.motion_profiles;
 
-import org.theflyingtoasters.controllers.AbstractFeedbackController;
+import org.theflyingtoasters.controllers.FeedbackController;
 import org.theflyingtoasters.controllers.PIDcontroller;
 import org.theflyingtoasters.path_generation.*;
 import org.theflyingtoasters.utilities.Logging;
@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author jackf
  *
  */
-public class MotionProfile implements AbstractFeedbackController {
+public class MotionProfile implements FeedbackController {
 	private double error = 0;
 	private Profile profile;
 	private double totalTime = 0;
@@ -124,11 +124,6 @@ public class MotionProfile implements AbstractFeedbackController {
 		}
 	}
 
-	@Override
-	public void readFromPrefs(String name) {
-		// TODO make read from prefs
-	}
-
 	// setting/getting the setpoint of a motion profile makes no sense.
 	@Override
 	public void setSetpoint(double setpoint) {
@@ -178,6 +173,7 @@ public class MotionProfile implements AbstractFeedbackController {
 	public void reset() {
 		totalTime = 0;
 		offset = 0;
+		pid.reset();
 	}
 
 	/**

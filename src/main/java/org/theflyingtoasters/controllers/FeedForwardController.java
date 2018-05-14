@@ -9,7 +9,7 @@ import org.theflyingtoasters.utilities.Logging;
  * @author jackf
  *
  */
-public class FeedForwardController implements AbstractFeedbackController {
+public class FeedForwardController implements FeedbackController {
 	protected double kFeedForward = 0;
 	protected double setpoint;
 
@@ -38,12 +38,6 @@ public class FeedForwardController implements AbstractFeedbackController {
 	}
 
 	@Override
-	public void readFromPrefs(String name) {
-		// TODO add config reading
-
-	}
-
-	@Override
 	public double run(double current, double deltaTime) {
 		double error = current - setpoint;
 		boolean sign = error > 0;
@@ -58,11 +52,6 @@ public class FeedForwardController implements AbstractFeedbackController {
 	 * does literally nothing.
 	 */
 	public void reset() {
-	}
-
-	@Override
-	public void logStatus() {
-		Logging.logMessage("FeedForward controller running with gain " + kFeedForward, Logging.Priority.LOW);
 	}
 
 	@Override

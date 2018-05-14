@@ -50,7 +50,7 @@ public class Teleop extends OpMode {
 	 *            the Robot that's being controlled.
 	 */
 	public Teleop(Robot bot) {
-		super(bot, "Teleop");
+		super(bot);
 		ps4 = new PS4(0);
 		op = new Operator(2);
 	}
@@ -59,19 +59,14 @@ public class Teleop extends OpMode {
 	 * Called once when the opmode starts. Doesn't really do anything yet.
 	 */
 	public void init() {
-		super.init();
 		Logging.h("Starting teleop");
 		//Disables feedback control!!!! (OOPS WE DIDNT thiNK OF ThiS UNtiL BAG Day!!!)
-		robot.driveBase.setFeedbackActive(false);
+		robot.driveBase.setMotionProfileActive(false);
 		robot.driveBase.left.setFeedbackController(null);
 		robot.driveBase.right.setFeedbackController(null);
 		
 		robot.lift.readTuningValuesFromDashboard();
 //		robot.intake.readTuningValuesFromDashboard();
-		
-		if (SmartDashboard.getBoolean("Manual enabled", true)) {
-			robot.lift.disableMotionMagic();
-		}
 
 		op.checkControllerType();
 		
@@ -93,9 +88,6 @@ public class Teleop extends OpMode {
 	 */
 	public void periodic(double deltaTime) {
 		Logging.l("Teleop periodic run");
-		
-		// updates all running commands
-		super.periodic(deltaTime);
 		
 		// get input from ps4 controller
 		ps4.poll();
@@ -199,7 +191,7 @@ public class Teleop extends OpMode {
 		if(robot.intake.getState() == Intake.State.HAS_CUBE) ps4.rumbleForTime(1, true, .5);
 		
 		//Set the light rumble based on the drivebase velocity.
-		ps4.rumble(robot.driveBase.getWheelVelocity(), false);
+		ps4.rumble(robot.driveBase.getNormalizedRobotVelocity(), false);
 		
 //		endgame = (ds.getMatchTime() > 105) || (ps4.isPressed(PS4.Button.SHARE));
 		
@@ -234,5 +226,11 @@ public class Teleop extends OpMode {
 	public void stop() {
 		super.stop();
 		Logging.h("Stopping teleop");
+	}
+
+	@Override
+	public void run(double deltaTime) {
+		// TODO Auto-generated method stub
+		
 	}
 }

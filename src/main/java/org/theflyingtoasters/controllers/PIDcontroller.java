@@ -12,7 +12,7 @@ import org.theflyingtoasters.utilities.Logging;
  */
 
 // TODO add fancy class that does all the stuff the old PID did
-public class PIDcontroller extends ProportionalController implements AbstractFeedbackController {
+public class PIDcontroller extends ProportionalController implements FeedbackController {
 	private double kI, kD;
 	private boolean dOnMeasurement = false;
 	private double maxIntegral;
@@ -185,12 +185,5 @@ public class PIDcontroller extends ProportionalController implements AbstractFee
 		lastReading = 0;
 	}
 
-	@Override
-	/**
-	 * log the current status of the controller
-	 */
-	public void logStatus() {
-		Logging.logMessage("Proportional controller running with gains: kP=" + kP + ", kI=" + kI + ", kD=" + kD
-				+ ", kFeedForward=" + kFeedForward, Logging.Priority.LOW);
-	}
+
 }

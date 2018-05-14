@@ -1,5 +1,7 @@
 package org.theflyingtoasters.hardware;
 
+import org.theflyingtoasters.hardware.motors.Talon;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.Servo;
@@ -39,8 +41,8 @@ public class Climber {
 		left.setInverted(false);
 		right.setInverted(true);
 		
-		left.talon.setNeutralMode(NeutralMode.Brake);
-		right.talon.setNeutralMode(NeutralMode.Brake);
+		left.setNeutralMode(NeutralMode.Brake);
+		right.setNeutralMode(NeutralMode.Brake);
 	}
 	
 	public void setSpeed(double speed) {

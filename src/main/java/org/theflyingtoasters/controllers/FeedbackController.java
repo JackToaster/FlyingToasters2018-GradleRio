@@ -7,7 +7,7 @@ package org.theflyingtoasters.controllers;
  * @author jackf
  *
  */
-public interface AbstractFeedbackController {
+public interface FeedbackController {
 	/**
 	 * sets the gains of the controller
 	 * 
@@ -15,15 +15,6 @@ public interface AbstractFeedbackController {
 	 *            the gains of the different terms of the feedback/forward control.
 	 */
 	void setGains(double... gains);
-
-	// TODO make this work maybe
-	/**
-	 * reads the gains from a file. Not implemented yet.
-	 * 
-	 * @param name
-	 *            the name of the thing to read?
-	 */
-	void readFromPrefs(String name);
 
 	/**
 	 * sets the setpoint of the controller
@@ -51,8 +42,4 @@ public interface AbstractFeedbackController {
 	 * resets the controller.
 	 */
 	void reset();
-	/**
-	 * prints out a message of the gains/status of the controller
-	 */
-	void logStatus();
 }

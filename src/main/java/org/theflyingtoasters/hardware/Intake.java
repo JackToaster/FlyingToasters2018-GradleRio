@@ -1,6 +1,7 @@
 package org.theflyingtoasters.hardware;
 
 import org.theflyingtoasters.hardware.Lift.Positions;
+import org.theflyingtoasters.hardware.motors.Talon;
 import org.theflyingtoasters.utilities.Logging;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -23,8 +24,8 @@ public class Intake {
 	static final int rightMotorID = 6;
 	static final int cubeSwitchPort = 0;
 
-	private FeedbackTalon leftTalon;
-	private FeedbackTalon rightTalon;
+	private Talon leftTalon;
+	private Talon rightTalon;
 	private DigitalInput cubeSwitch;
 	private boolean currentSwitchStatus = false;
 	
@@ -65,33 +66,35 @@ public class Intake {
 	public Intake(Lift lift) {
 		addTuningToDashboard();
 	
-		leftTalon = new FeedbackTalon(leftMotorID);
-		rightTalon = new FeedbackTalon(rightMotorID);
+		leftTalon = new Talon(leftMotorID);
+		rightTalon = new Talon(rightMotorID);
 		
-		leftTalon.talon.configContinuousCurrentLimit(20, 10);
-		rightTalon.talon.configContinuousCurrentLimit(20, 10);
+		leftTalon.configContinuousCurrentLimit(20, 10);
+		rightTalon.configContinuousCurrentLimit(20, 10);
 		
-		leftTalon.talon.configPeakCurrentLimit(20, 10);
-		rightTalon.talon.configPeakCurrentLimit(20, 10);
+		leftTalon.configPeakCurrentLimit(20, 10);
+		rightTalon.configPeakCurrentLimit(20, 10);
 		
-		leftTalon.talon.configPeakCurrentDuration(1000, 10);
-		rightTalon.talon.configPeakCurrentDuration(1000, 10);
+		leftTalon.configPeakCurrentDuration(1000, 10);
+		rightTalon.configPeakCurrentDuration(1000, 10);
 		
 		leftTalon.enableCurrentLimit(true);
 		rightTalon.enableCurrentLimit(true);
 		
-		leftTalon.talon.setNeutralMode(NeutralMode.Brake);
-		rightTalon.talon.setNeutralMode(NeutralMode.Brake);
+		leftTalon.setNeutralMode(NeutralMode.Brake);
+		rightTalon.setNeutralMode(NeutralMode.Brake);
 		
 		leftTalon.setInverted(false);
 		rightTalon.setInverted(true);
 		//rightTalon.talon.setInverted(true);
 		
-		leftTalon.talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 1000);
-		rightTalon.talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 1000);
+		leftTalon.setupSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+		rightTalon.setupSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 		
-		leftTalon.setupTalonPIDVA(intakeParams.kF, intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.vel, intakeParams.accel);
-		rightTalon.setupTalonPIDVA(intakeParams.kF, intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.vel, intakeParams.accel);
+		leftTalon.setupPID(intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.kF); 
+		leftTalon.setupMotionMagic(intakeParams.vel, intakeParams.accel);
+		rightTalon.setupPID(intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.kF);
+		rightTalon.setupMotionMagic(intakeParams.vel, intakeParams.accel);
 
 		
 		intakeParams = new IntakeTalonParams();
@@ -113,11 +116,11 @@ public class Intake {
 	
 	public void setVelocity(double velocity) {
 		velocity *= MAX_INTAKE_VELOCITY;
-		leftTalon.talon.set(ControlMode.Velocity, velocity);
-		rightTalon.talon.set(ControlMode.Velocity, -velocity);
+		leftTalon.set(ControlMode.Velocity, velocity);
+		rightTalon.set(ControlMode.Velocity, -velocity);
 		SmartDashboard.putNumber("Intake Target Velocity", velocity);
-		SmartDashboard.putNumber("Left Intake Velocity Error", velocity - leftTalon.talon.getSelectedSensorVelocity(0));
-		SmartDashboard.putNumber("Right Intake Velocity Error", velocity - rightTalon.talon.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("Left Intake Velocity Error", velocity - leftTalon.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("Right Intake Velocity Error", velocity - rightTalon.getSelectedSensorVelocity(0));
 	}
 	
 	public void periodic(double deltaTime) {
@@ -200,8 +203,8 @@ public class Intake {
 		SmartDashboard.putString("Intake State", currentState.toString());
 		SmartDashboard.putBoolean("Has Cube?", hasCube());
 		SmartDashboard.putNumber("Intake Time", time);
-		SmartDashboard.putNumber("Left Intake Velocity", leftTalon.talon.getSelectedSensorVelocity(0));
-		SmartDashboard.putNumber("Right Intake Velocity", rightTalon.talon.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("Left Intake Velocity", leftTalon.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("Right Intake Velocity", rightTalon.getSelectedSensorVelocity(0));
 	}
 
 	
@@ -239,15 +242,18 @@ public class Intake {
 	
 	public void readTuningValuesFromDashboard() {
 		Logging.h("Reading pid tuning values");
+		
 		intakeParams.kP = SmartDashboard.getNumber("intake_kp", intakeParams.kP);
 		intakeParams.kI = SmartDashboard.getNumber("intake_ki", intakeParams.kI);
 		intakeParams.kD = SmartDashboard.getNumber("intake_kd", intakeParams.kD);
 		intakeParams.kF = SmartDashboard.getNumber("intake_kf", intakeParams.kF);
 		intakeParams.vel = (int) SmartDashboard.getNumber("intake_vel", intakeParams.vel);
 		intakeParams.accel = (int) SmartDashboard.getNumber("intake_accel", intakeParams.accel);
-
-		leftTalon.setupTalonPIDVA(intakeParams.kF, intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.vel, intakeParams.accel);
-		rightTalon.setupTalonPIDVA(intakeParams.kF, intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.vel, intakeParams.accel);
+		
+		leftTalon.setupPID(intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.kF); 
+		leftTalon.setupMotionMagic(intakeParams.vel, intakeParams.accel);
+		rightTalon.setupPID(intakeParams.kP, intakeParams.kI, intakeParams.kD, intakeParams.kF);
+		rightTalon.setupMotionMagic(intakeParams.vel, intakeParams.accel);
 	}
 	
 	public void addTuningToDashboard() {

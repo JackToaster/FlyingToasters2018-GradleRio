@@ -3,8 +3,6 @@ package org.theflyingtoasters.robot;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.theflyingtoasters.commands.autonomous.*;
-import org.theflyingtoasters.commands.interfaces.*;
 import org.theflyingtoasters.commands.teleop.*;
 import org.theflyingtoasters.hardware.Climber;
 import org.theflyingtoasters.hardware.DriveBase2018;
@@ -13,7 +11,6 @@ import org.theflyingtoasters.hardware.LED;
 import org.theflyingtoasters.hardware.Lift;
 import org.theflyingtoasters.hardware.PDP;
 import org.theflyingtoasters.toaster_commands.Command;
-import org.theflyingtoasters.toaster_commands.CommandCallback;
 import org.theflyingtoasters.toaster_commands.OpMode;
 import org.theflyingtoasters.utilities.Logging;
 
@@ -33,7 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory. This class implements the CommandCallback interface which allows
  * it to have a function called upon autonomous or teleop finishing.
  */
-public class Robot extends IterativeRobot implements CommandCallback {
+public class Robot extends IterativeRobot {
     UsbCamera Cam1, Cam2;
 
     /**
@@ -213,7 +210,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
             teleop.stop();
         autonomous = null;
         teleop = null;
-        driveBase.setFeedbackActive(false);
+        driveBase.setMotionProfileActive(false);
         driveBase.driveArcade(0, 0);
         if (pdp != null) pdp.forceLogCurrent();
     }
@@ -236,10 +233,10 @@ public class Robot extends IterativeRobot implements CommandCallback {
         //call the constructor of the auton.
         switch (autoSelected) {
             case AUTO_LINE:
-                autonomous = new AutoLineAuton(this);
+                autonomous = null;//new AutoLineAuton(this);
                 break;
             case AUTO_SWITCH:
-                autonomous = new SwitchAuton(this, gameData);
+                autonomous = null;//new SwitchAuton(this, gameData);
                 break;
 //		case AUTO_SWITCH_2C:
 //			autonomous = new SwitchAuton2Cube(this, gameData);
@@ -269,19 +266,19 @@ public class Robot extends IterativeRobot implements CommandCallback {
 //			autonomous = new Scale3CubeAuto(this, false, gameData);
 //			break;
             case AUTO_FAST_3C_L:
-                autonomous = new Scale3CubeAutoFast(this, true, gameData);
+                autonomous = null;//new Scale3CubeAutoFast(this, true, gameData);
                 break;
             case AUTO_FAST_3C_R:
-                autonomous = new Scale3CubeAutoFast(this, false, gameData);
+                autonomous = null;//new Scale3CubeAutoFast(this, false, gameData);
                 break;
             case OP_AUTO_L:
-                autonomous = new OPScaleAuton(this, true, gameData);
+                autonomous = null;//new OPScaleAuton(this, true, gameData);
                 break;
             case OP_AUTO_R:
-                autonomous = new OPScaleAuton(this, false, gameData);
+                autonomous = null;//new OPScaleAuton(this, false, gameData);
                 break;
             default:
-                autonomous = new TestAuton(this, "AUTON NOT FOUND");
+                autonomous = null;//new TestAuton(this, "AUTON NOT FOUND");
                 Logging.e("Could not get auton from chooser");
                 break;
         }
@@ -321,7 +318,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
             autonomousFirstPeriodic();
         } else {
             standardPeriodic();
-            autonomous.periodic(deltaTime);
+            autonomous.opModePeriodic(deltaTime);
         }
     }
 
@@ -330,7 +327,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
      * init in the auton command.
      */
     public void autonomousFirstPeriodic() {
-        autonomous.init();
+        autonomous.opModeInit();
         standardFirstPeriodic();
     }
 
@@ -354,7 +351,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
             teleopFirstPeriodic();
         } else {
             standardPeriodic();
-            teleop.periodic(deltaTime);
+            teleop.opModePeriodic(deltaTime);
         }
     }
 
@@ -364,7 +361,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
      */
     private void teleopFirstPeriodic() {
         Logging.h("Teleop Enabled");
-        teleop.init();
+        teleop.opModeInit();
         standardFirstPeriodic();
     }
 
@@ -417,16 +414,5 @@ public class Robot extends IterativeRobot implements CommandCallback {
         isFirstPeriodic = false;
     }
 
-    /**
-     * Called when a command is finished. Sets the command to null to free it up for
-     * garbage collection and prints a message that the command is finished.
-     */
-    @Override
-    public void called(Command cmd) {
-        if (cmd == autonomous) {
-            autonomous = null;
-            Logging.h("Auton finished!");
-        }
-
-    }
+    
 }

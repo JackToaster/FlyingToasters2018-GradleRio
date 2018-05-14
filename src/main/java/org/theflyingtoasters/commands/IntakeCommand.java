@@ -3,7 +3,7 @@ package org.theflyingtoasters.commands;
 import org.theflyingtoasters.hardware.Intake;
 import org.theflyingtoasters.robot.Robot;
 import org.theflyingtoasters.toaster_commands.Command;
-import org.theflyingtoasters.toaster_commands.CommandCallback;
+import org.theflyingtoasters.toaster_commands.CommandScheduler;
 
 /**
  * A command to intake/output a power cube.
@@ -24,7 +24,7 @@ public class IntakeCommand extends Command {
 	/**
 	 * Constructor for the intake command.
 	 * 
-	 * @param opMode
+	 * @param runner
 	 *            the opmode calling the command. used for callback.
 	 * @param robot
 	 *            the robot the command is running on
@@ -33,8 +33,8 @@ public class IntakeCommand extends Command {
 	 * @param mode
 	 *            whether the command is intaking or outputting
 	 */
-	public IntakeCommand(CommandCallback opMode, Robot robot, String name, Intake.State mode) {
-		super(opMode, name);
+	public IntakeCommand(CommandScheduler runner, Robot robot, String name, Intake.State mode) {
+		super(runner);
 		bot = robot;
 		this.mode = mode;
 	}
@@ -49,12 +49,12 @@ public class IntakeCommand extends Command {
 	 * @param mode
 	 *            whether the command is intaking or outputting
 	 */
-	public IntakeCommand(CommandCallback opMode, Robot robot, Intake.State mode) {
-		this(opMode, robot, "Intake command", mode);
+	public IntakeCommand(CommandScheduler runner, Robot robot, Intake.State mode) {
+		this(runner, robot, "Intake command", mode);
 	}
 	
-	public IntakeCommand(CommandCallback opMode, Robot robot, Intake.State mode, double speed) {
-		this(opMode, robot, "Intake command", mode);
+	public IntakeCommand(CommandScheduler runner, Robot robot, Intake.State mode, double speed) {
+		this(runner, robot, "Intake command", mode);
 		intakeForwardSpeed = speed;
 	}
 
@@ -72,7 +72,7 @@ public class IntakeCommand extends Command {
 	 */
 	public void periodic(double deltaTime) {
 		if(mode == Intake.State.INTAKING) {
-			bot.driveBase.setFeedbackActive(false);
+			bot.driveBase.setMotionProfileActive(false);
 			bot.driveBase.driveArcade(intakeForwardSpeed, 0);
 		}
 		// Check if the cube is gotten, and and the command if so.
@@ -90,7 +90,5 @@ public class IntakeCommand extends Command {
 	 */
 	public void stop() {
 		bot.intake.setPower(0);
-		super.stop();
-		;
 	}
 }

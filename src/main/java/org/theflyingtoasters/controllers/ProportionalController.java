@@ -50,14 +50,6 @@ public class ProportionalController extends FeedForwardController {
 		}
 	}
 
-	@Override
-	/**
-	 * read the gains from a preferences file
-	 */
-	public void readFromPrefs(String name) {
-		// TODO add config reading
-
-	}
 
 	@Override
 	/**
@@ -71,12 +63,5 @@ public class ProportionalController extends FeedForwardController {
 		return feedForwardValue + proportional;
 	}
 
-	@Override
-	/**
-	 * log the current status of the controller
-	 */
-	public void logStatus() {
-		Logging.logMessage("Proportional controller running with gains: kP=" + kP + ", kFeedForward=" + kFeedForward,
-				Logging.Priority.LOW);
-	}
+
 }

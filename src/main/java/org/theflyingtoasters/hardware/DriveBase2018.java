@@ -4,7 +4,9 @@ import org.theflyingtoasters.controllers.PIDcontroller;
 import org.theflyingtoasters.controllers.motion_profiles.MotionProfile;
 import org.theflyingtoasters.controllers.motion_profiles.SkidsteerProfileGenerator;
 import org.theflyingtoasters.controllers.motion_profiles.WheelProfileGenerator;
-import org.theflyingtoasters.hardware.interfaces.DriveBase;
+import org.theflyingtoasters.hardware.motors.LinkedTalons;
+import org.theflyingtoasters.hardware.motors.Talon;
+import org.theflyingtoasters.hardware.motors.Victor;
 import org.theflyingtoasters.path_generation.Path;
 import org.theflyingtoasters.path_generation.Waypoint;
 import org.theflyingtoasters.utilities.Logging;
@@ -21,9 +23,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author jack
  *
  */
-public class DriveBase2018 extends DriveBase {
-	public FeedbackLinkedCAN left;
-	public FeedbackLinkedCAN right;
+public class DriveBase2018 {
+	public LinkedTalons left;
+	public LinkedTalons right;
 	
 	private final static double MAX_VELOCITY = 3400;
 	
@@ -37,10 +39,12 @@ public class DriveBase2018 extends DriveBase {
 	private PIDcontroller rightMotionProfilePID = new PIDcontroller(6.5, 13, 0.275);
 	private WheelProfileGenerator leftProfileGen;
 	private WheelProfileGenerator rightProfileGen;
-
+	
 	public MotionProfile leftMotionProfile;
 	public MotionProfile rightMotionProfile;
 
+	private boolean runningMotionProfile = false;
+	
 	public double leftPower = 0;
 	public double rightPower = 0;
 
@@ -64,25 +68,16 @@ public class DriveBase2018 extends DriveBase {
 
 	public DriveBase2018() {
 		super();
-		left = new FeedbackLinkedCAN(FeedbackDevice.CTRE_MagEncoder_Absolute, Motors.LEFT1.id,
+		left = new LinkedTalons(FeedbackDevice.CTRE_MagEncoder_Absolute, Motors.LEFT1.id,
 				Motors.LEFT0.getVictor(), Motors.LEFT2.getVictor());
-		left.feedbackTalon.talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_20Ms, 0);
-		right = new FeedbackLinkedCAN(FeedbackDevice.CTRE_MagEncoder_Absolute, Motors.RIGHT1.id,
+		left.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_20Ms, 0);
+		right = new LinkedTalons(FeedbackDevice.CTRE_MagEncoder_Absolute, Motors.RIGHT1.id,
 				Motors.RIGHT0.getVictor(), Motors.RIGHT2.getVictor());
-		right.feedbackTalon.talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_20Ms, 0);
+		right.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_20Ms, 0);
 		right.setInverted(true);
-		left.setEncoderReversed(true);
 		
-		left.setCurrentLimit(50);
-		right.setCurrentLimit(50);
-		left.enableCurrentLimit(false);
-		right.enableCurrentLimit(false);
-		
-		// add the motor controllers to the list to be updated
-		registerMotorController(left);
-		registerMotorController(right);
+		lowCurrentLimiting();
 
-		// TODO set offsets appropriately
 		leftProfileGen = new SkidsteerProfileGenerator(-wheelDistance / 2);
 		rightProfileGen = new SkidsteerProfileGenerator(wheelDistance / 2);
 
@@ -93,18 +88,22 @@ public class DriveBase2018 extends DriveBase {
 		rightMotionProfile = new MotionProfile(rightMotionProfilePID, velGain, accelGain, rightProfileGen);
 	}
 
-	public double getWheelVelocity() {
-		double vl = Math.abs(left.feedbackTalon.getRawVelocity());
-		double vr = Math.abs(right.feedbackTalon.getRawVelocity());
+	public double getNormalizedRobotVelocity() {
+		double vl = Math.abs(left.getRawSensorVelocity());
+		double vr = Math.abs(right.getRawSensorVelocity());
 		double v = Math.min(Math.max(vl,vr),MAX_VELOCITY)/MAX_VELOCITY;
 		v = Utilities.expInput(v,1.4);
 		return v;
 	}
 	
 	public void update(double dT) {
-		super.update(dT);
-		SmartDashboard.putNumber("left current", left.feedbackTalon.talon.getOutputCurrent());
-		SmartDashboard.putNumber("right current", right.feedbackTalon.talon.getOutputCurrent());
+		if(runningMotionProfile) {
+			left.runFeedback(0, dT);
+			right.runFeedback(0, dT);
+		}
+		
+		SmartDashboard.putNumber("left current", left.getOutputCurrent());
+		SmartDashboard.putNumber("right current", right.getOutputCurrent());
 		SmartDashboard.putNumber("left position", left.getPosition());
 		SmartDashboard.putNumber("right position", right.getPosition());
 		leftMotionProfile.writeErrorToDashboard("left MP error");
@@ -137,7 +136,6 @@ public class DriveBase2018 extends DriveBase {
 		right.enableCurrentLimit(false);
 	}
 	
-	@Override
 	public void drive(double... inputs) {
 		if (inputs.length == 2) {
 			driveArcade(inputs[0], inputs[1]);
@@ -209,8 +207,7 @@ public class DriveBase2018 extends DriveBase {
 		// enable them
 		left.setFeedbackController(leftMotionProfile);
 		right.setFeedbackController(rightMotionProfile);
-		left.setFeedbackActive(true);
-		right.setFeedbackActive(true);
+		setMotionProfileActive(true);
 	}
 
 	/**
@@ -246,5 +243,9 @@ public class DriveBase2018 extends DriveBase {
 		Path path = new Path(waypoints);
 		Logging.l(path);
 		drivePath(path, isBackwards);
+	}
+
+	public void setMotionProfileActive(boolean active) {
+		runningMotionProfile = active;
 	}
 }

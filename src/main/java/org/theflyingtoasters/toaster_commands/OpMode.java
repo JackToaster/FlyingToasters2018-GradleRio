@@ -11,7 +11,7 @@ import org.theflyingtoasters.utilities.Logging;
  * @author jackf
  *
  */
-public abstract class OpMode extends CommandGroup{
+public abstract class OpMode implements CommandScheduler {
 	/**
 	 * A list of running commands. On periodic, all commands are updated.
 	 */
@@ -29,40 +29,35 @@ public abstract class OpMode extends CommandGroup{
 	 * @param name
 	 *            the name of the opmode.
 	 */
-	public OpMode(Robot bot, String name) {
-		super(bot, name);
-		commands = new ArrayList<Command>();
-		robot = bot;
-	}
-
-	/**
-	 * Constructor using no defined name. Avoid this.
-	 * 
-	 * @param bot
-	 *            the robot the opmode is running on
-	 */
 	public OpMode(Robot bot) {
-		super(bot, "Default opmode name");
 		commands = new ArrayList<Command>();
 		robot = bot;
 	}
 
 	/**
-	 * called once when the command is started (during firstPeriodic in Robot)
+	 * called once when the opmode is started (during firstPeriodic in Robot)
 	 */
-	public void init() {
-		// No auto-initing of commands, since they may not start immediately.
+	public final void opModeInit() {
+		init();
 	}
+
+	/**
+	 * called once when the opmode is started (during firstPeriodic in Robot)
+	 */
+	public abstract void init();
 
 	/**
 	 * called periodically during teleop/autonomous periodic.
 	 */
-	public void periodic(double deltaTime) {
+	public void opModePeriodic(double deltaTime) {
 		Command[] cmdArray = commands.toArray(new Command[commands.size()]);
 		for (Command cmd : cmdArray) {
 			cmd.periodic(deltaTime);
 		}
+		periodic(deltaTime);
 	}
+
+	public abstract void periodic(double deltaTime);
 
 	/**
 	 * called once or never, to stop the opmode.
@@ -70,7 +65,7 @@ public abstract class OpMode extends CommandGroup{
 	public void stop() {
 		Command[] cmdArray = commands.toArray(new Command[commands.size()]);
 		for (Command cmd : cmdArray) {
-			cmd.stop();
+			cmd.commandStop();
 			commands.remove(cmd);
 		}
 	}
@@ -81,10 +76,21 @@ public abstract class OpMode extends CommandGroup{
 	 * @param cmd
 	 *            the command to add
 	 */
-	protected void addCommand(Command cmd) {
+	public void addCommand(Command cmd) {
 		Logging.h("Added command: " + cmd);
 		commands.add(cmd);
-		cmd.init();
+		cmd.commandInit();
+	}
+
+	/**
+	 * stops and removes a command.
+	 * 
+	 * @param cmd
+	 *            the command to remove
+	 */
+	public void removeCommand(Command cmd) {
+		commands.remove(cmd);
+		cmd.commandStop();
 	}
 
 	/**

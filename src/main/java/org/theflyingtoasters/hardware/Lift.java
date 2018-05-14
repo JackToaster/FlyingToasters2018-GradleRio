@@ -1,5 +1,7 @@
 package org.theflyingtoasters.hardware;
 
+import org.theflyingtoasters.hardware.motors.LinkedTalons;
+import org.theflyingtoasters.hardware.motors.Talon;
 import org.theflyingtoasters.utilities.Logging;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -114,8 +116,8 @@ public class Lift {
 	/**
 	 * the motor which drives the lift
 	 */
-	private FeedbackLinkedCAN liftMotor;
-	private FeedbackTalon flipMotor;
+	private LinkedTalons liftMotor;
+	private Talon flipMotor;
 	private DigitalInput limitSwitch;
 	private boolean limSwitchVal = false;
 	private boolean lastSwitchVal = false;
@@ -143,13 +145,13 @@ public class Lift {
 
 		// Create the talons for the lift and flipper and invert them if necessary (May
 		// change with string pot for lift talon)
-		FeedbackTalon liftFeedbackTalon = new FeedbackTalon(LIFT_TALON_ID, FeedbackDevice.Analog);
 		Talon liftFollowerTalon = new Talon(LIFT_FOLLOWER_ID);
-		liftFollowerTalon.talon.setInverted(true);
-		liftFeedbackTalon.talon.setInverted(true);
-		liftMotor = new FeedbackLinkedCAN(liftFeedbackTalon, liftFollowerTalon);
+		liftMotor = new LinkedTalons(FeedbackDevice.Analog, LIFT_TALON_ID, liftFollowerTalon);
+		
+		liftFollowerTalon.setInverted(true);
+		liftMotor.setInverted(true);
 		// Set up flip motor and limit switch
-		flipMotor = new FeedbackTalon(FLIP_TALON_ID, FeedbackDevice.Analog);
+		flipMotor = new Talon(FeedbackDevice.Analog, FLIP_TALON_ID);
 		limitSwitch = new DigitalInput(LIMIT_SWITCH_PORT);
 
 		// Sets up motion magic constants with pid/va values.
@@ -162,19 +164,12 @@ public class Lift {
 	 * sets up motion magic on motor controllers
 	 */
 	private void setupMotionMagic() {
-		flipMotor.setupTalonPIDVA(flipParams.kF, flipParams.kP, flipParams.kI, flipParams.kD, flipParams.vel,
-				flipParams.accel);
-		liftMotor.feedbackTalon.setupTalonPIDVA(liftParams.kF, liftParams.kP, liftParams.kI, liftParams.kD,
-				liftParams.vel, liftParams.accel);
+		flipMotor.setupPID(flipParams.kP, flipParams.kI, flipParams.kD, flipParams.kF);
+		flipMotor.setupMotionMagic(flipParams.vel, flipParams.accel);
+		liftMotor.setupPID(liftParams.kP, liftParams.kI, liftParams.kD, liftParams.kF);
+		liftMotor.setupMotionMagic(liftParams.vel, liftParams.accel);
 	}
 
-	/**
-	 * Disables motion magic and puts motors in percent output mode.
-	 */
-	public void disableMotionMagic() {
-		flipMotor.stopMotionMagic();
-		liftMotor.feedbackTalon.stopMotionMagic();
-	}
 
 	/**
 	 * Sets the lift to be active(runs feedback control stuff) or inactive (motor at
@@ -216,15 +211,15 @@ public class Lift {
 			currentPos = position;
 		}
 		// Set the setpoint of the lift motor
-		liftMotor.feedbackTalon.setSetpoint(currentPos.liftPos);
+		liftMotor.set(ControlMode.MotionMagic, currentPos.liftPos);
 
 		// The flip motor can't be up higher than ground_tilt if the lift is too low.
 		// Mostly a sanity check for invalid setpoints to avoid damage.
-		if (liftMotor.feedbackTalon.getRawPosition() < FLIP_MIN_POS
+		if (liftMotor.getRawSensorPosition() < FLIP_MIN_POS
 				|| currentPos.flipPos >= Positions.GROUND_TILT.flipPos) {
-			flipMotor.setSetpoint(currentPos.flipPos);
+			flipMotor.set(ControlMode.MotionMagic, currentPos.flipPos);
 		} else {
-			flipMotor.setSetpoint(Positions.GROUND.flipPos);
+			flipMotor.set(ControlMode.MotionMagic, Positions.GROUND.flipPos);
 		}
 	}
 
@@ -257,7 +252,7 @@ public class Lift {
 			// Starting pos is a special case, since it's right at the minimum flip
 			// position.
 			if (currentPos == Positions.STARTING) {
-				flipMotor.setSetpoint(currentPos.flipPos);
+				flipMotor.set(ControlMode.MotionMagic, currentPos.flipPos);
 			} else {
 				if (lastResettingDown != resettingDown) {
 					Logging.h("Lift is active again.");
@@ -265,16 +260,13 @@ public class Lift {
 
 				// Ensure that the flipper won't flip until it's above the top of the first
 				// stage.
-				if (liftMotor.feedbackTalon.getRawPosition() < FLIP_MIN_POS
+				if (liftMotor.getRawSensorPosition() < FLIP_MIN_POS
 						|| currentPos.flipPos >= Positions.GROUND_TILT.flipPos) {
-					flipMotor.setSetpoint(currentPos.flipPos);
+					flipMotor.set(ControlMode.MotionMagic, currentPos.flipPos);
 				} else {
-					flipMotor.setSetpoint(Positions.GROUND.flipPos);
+					flipMotor.set(ControlMode.MotionMagic, Positions.GROUND.flipPos);
 				}
 			}
-			// Run feedback to make sure motion magic keeps happening.
-			liftMotor.runFeedback(0);
-			flipMotor.runFeedback(0);
 		}
 
 		// Used to detect when resettingDown turns on/off.
@@ -306,14 +298,14 @@ public class Lift {
 	 */
 	private void resetError() {
 		//Set sensor postion
-		liftMotor.feedbackTalon.talon.setSelectedSensorPosition((int) Positions.GROUND.liftPos, 0, 20);
-		flipMotor.talon.setSelectedSensorPosition((int) Positions.GROUND.flipPos, 0, 20);
+		liftMotor.setSelectedSensorPosition((int) Positions.GROUND.liftPos, 0, 20);
+		flipMotor.setSelectedSensorPosition((int) Positions.GROUND.flipPos, 0, 20);
 		
 		//Reset momentary button on dashboard
 		SmartDashboard.putBoolean("Reset Error", false);
 		Logging.h("Reset Lift and Flip Error");
 		//Make sure motion magic won't freak out
-		flipMotor.talon.set(ControlMode.PercentOutput, 0);
+		flipMotor.set(ControlMode.PercentOutput, 0);
 	}
 	
 	/**
@@ -337,8 +329,8 @@ public class Lift {
 	 * @return the total error of the lift and flipper
 	 */
 	public double getTotalError() {
-		return Math.abs(liftMotor.feedbackTalon.getRawPosition() - currentPos.liftPos)
-				+ Math.abs(flipMotor.getRawPosition() - currentPos.flipPos);
+		return Math.abs(liftMotor.getRawSensorPosition() - currentPos.liftPos)
+				+ Math.abs(flipMotor.getRawSensorPosition() - currentPos.flipPos);
 	}
 	
 	/**
@@ -347,12 +339,12 @@ public class Lift {
 	 */
 	public void logToDashboard() {
 		SmartDashboard.putString("Lift setpoint name", currentPos.name());
-		SmartDashboard.putNumber("lift encoder pos", liftMotor.feedbackTalon.getRawPosition());
-		SmartDashboard.putNumber("lift closed loop error", liftMotor.feedbackTalon.getRawCLError());
-		SmartDashboard.putNumber("flip encoder pos", flipMotor.getRawPosition());
+		SmartDashboard.putNumber("lift encoder pos", liftMotor.getRawSensorPosition());
+		SmartDashboard.putNumber("lift closed loop error", liftMotor.getRawCLError());
+		SmartDashboard.putNumber("flip encoder pos", flipMotor.getRawSensorPosition());
 		SmartDashboard.putNumber("flip closed loop error", flipMotor.getRawCLError());
-		SmartDashboard.putNumber("flip talon output voltage", flipMotor.talon.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Lift motor output voltage", liftMotor.feedbackTalon.talon.getMotorOutputVoltage());
+		SmartDashboard.putNumber("flip talon output voltage", flipMotor.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Lift motor output voltage", liftMotor.getMotorOutputVoltage());
 		SmartDashboard.putBoolean("Lift lim switch", limSwitchVal);
 		SmartDashboard.putBoolean("Resetting Down", resettingDown);
 	}

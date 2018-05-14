@@ -1,13 +1,13 @@
 package org.theflyingtoasters.toaster_commands;
 
-public class DelayedCommand extends Command implements CommandCallback{
+public class DelayedCommand extends Command implements CommandRunner{
 	private double delay;
 	private double timer;
 	private Command command;
 	private boolean commandRunning = false;
-	CommandCallback callback;
-	public DelayedCommand (CommandCallback cb, double delayTime) {
-		super(cb, "Delayed command");
+	
+	public DelayedCommand (CommandScheduler callback, double delayTime) {
+		super(callback);
 		delay = delayTime;
 	}
 	
@@ -36,7 +36,12 @@ public class DelayedCommand extends Command implements CommandCallback{
 	}
 
 	@Override
-	public void call(Command cmd) {
+	public void commandEnded(Command cmd) {
 		endCommand();
+	}
+
+	@Override
+	public CommandScheduler getScheduler() {
+		return callback.getScheduler();
 	}
 }

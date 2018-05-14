@@ -1,5 +1,9 @@
 package org.theflyingtoasters.hardware.motors;
 
+import org.theflyingtoasters.controllers.FeedbackController;
+import org.theflyingtoasters.utilities.Logging;
+import org.theflyingtoasters.utilities.Utilities.Conversions;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.IMotorController;
@@ -7,14 +11,15 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Talon extends TalonSRX implements MotorController, CanMotorController{
 	static final int configTimeoutMs = 20;
-
+	
+	private FeedbackController feedbackController;
+	
 	public Talon(int deviceNumber) {
 		super(deviceNumber);
-		// TODO Auto-generated constructor stub
 	}
-
-	public Talon(CanMotorID.TalonID talonID) {
-		this(talonID.canID);
+	public Talon(FeedbackDevice feedbackDevice, int deviceNumber) {
+		super(deviceNumber);
+		setupSensor(feedbackDevice);
 	}
 
 	public void setupSensor(FeedbackDevice device) {
@@ -45,7 +50,21 @@ public class Talon extends TalonSRX implements MotorController, CanMotorControll
 	public double getPosition() {
 		return getSelectedSensorPosition(0);
 	}
-
+	
+	public void setCurrentLimit(double maxCurrent) {
+		enableCurrentLimit(true);
+		configContinuousCurrentLimit((int)maxCurrent, configTimeoutMs);
+		configPeakCurrentLimit((int)maxCurrent, configTimeoutMs);
+		configPeakCurrentDuration(1, configTimeoutMs);
+	}
+	
+	public void setCurrentLimit(double peakCurrent, double peakTimeSec, double continuousCurrent) {
+		enableCurrentLimit(true);
+		configContinuousCurrentLimit((int)continuousCurrent, configTimeoutMs);
+		configPeakCurrentLimit((int)peakCurrent, configTimeoutMs);
+		configPeakCurrentDuration((int) peakTimeSec * 1000, configTimeoutMs);
+	}
+	
 	@Override
 	public void followMaster(CanMotorController master) {
 		follow(master.getIMotorController());
@@ -54,5 +73,54 @@ public class Talon extends TalonSRX implements MotorController, CanMotorControll
 	@Override
 	public IMotorController getIMotorController() {
 		return this;
+	}
+	
+	public int getRawSensorPosition() {
+		return getSelectedSensorPosition(0);
+	}
+	
+	public int getRawSensorVelocity() {
+		return getSelectedSensorVelocity(0);
+	}
+	
+	public double getSensorPosition(Conversions.Distance distUnit) {
+		return Conversions.Distance.ENCODER_TICK.convert(getRawSensorPosition(), distUnit);
+	}
+	
+	public double getSensorVelocity(Conversions.Velocity velUnit) {
+		return Conversions.Velocity.ENCODER_TPS.convert(getRawSensorPosition(), velUnit);
+	}
+	
+	public double getSensorPosition() {
+		return Conversions.Distance.ENCODER_TICK.convert(getRawSensorPosition(), Conversions.Distance.M);
+	}
+	
+	public double getSensorVelocity() {
+		return Conversions.Velocity.ENCODER_TPS.convert(getRawSensorPosition(), Conversions.Velocity.M_S);
+	}
+	
+	public double getRawCLError() {
+		return getClosedLoopError(0);
+	}
+	
+	public void setFeedbackController(FeedbackController controller) {
+		feedbackController = controller;
+	}
+	
+	public void runFeedback(double input, double setpoint, double deltaTime) {
+		if(feedbackController != null) {
+		feedbackController.setSetpoint(setpoint);
+		set(ControlMode.PercentOutput, feedbackController.run(input, deltaTime));
+		} else {
+			Logging.e("Feedback controller not set, cannot run feedback");
+		}
+	}
+	public void runFeedback(double setpoint, double deltaTime) {
+		if(feedbackController != null) {
+		feedbackController.setSetpoint(setpoint);
+		set(ControlMode.PercentOutput, feedbackController.run(getSensorPosition(), deltaTime));
+		} else {
+			Logging.e("Feedback controller not set, cannot run feedback");
+		}
 	}
 }

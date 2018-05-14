@@ -4,7 +4,7 @@ import org.theflyingtoasters.path_generation.Path;
 import org.theflyingtoasters.path_generation.Waypoint;
 import org.theflyingtoasters.robot.Robot;
 import org.theflyingtoasters.toaster_commands.Command;
-import org.theflyingtoasters.toaster_commands.CommandCallback;
+import org.theflyingtoasters.toaster_commands.CommandScheduler;
 import org.theflyingtoasters.utilities.Logging;
 
 /**
@@ -95,9 +95,9 @@ public class MotionProfileCommand extends Command {
 	 * @param waypoints
 	 *            the waypoints to generate the path from
 	 */
-	public MotionProfileCommand(CommandCallback opMode, Robot robot, String name, boolean isBackwards, Speed speed,
+	public MotionProfileCommand(CommandScheduler opMode, Robot robot, String name, boolean isBackwards, Speed speed,
 			Waypoint... waypoints) {
-		super(opMode, name);
+		super(opMode);
 		wp = waypoints;
 		backwards = isBackwards;
 		mirrored = false;
@@ -112,9 +112,9 @@ public class MotionProfileCommand extends Command {
 		endTime = path.endTime + endExtraTime;
 	}
 
-	public MotionProfileCommand(CommandCallback opMode, Robot robot, String name, boolean isBackwards,
+	public MotionProfileCommand(CommandScheduler opMode, Robot robot, String name, boolean isBackwards,
 			boolean isMirrored, Speed speed, Waypoint... waypoints) {
-		super(opMode, name);
+		super(opMode);
 		backwards = isBackwards;
 		mirrored = isMirrored;
 		wp = waypoints;
@@ -160,9 +160,9 @@ public class MotionProfileCommand extends Command {
 	 * end.
 	 */
 	public void periodic(double deltaTime) {
-		super.periodic(deltaTime);
 		time += deltaTime;
 		if (time >= endTime) {
+			bot.driveBase.setMotionProfileActive(false);
 			endCommand();
 		}
 	}
@@ -171,7 +171,6 @@ public class MotionProfileCommand extends Command {
 	 * called to stop the command early. Stops feedback control on the drivebase.
 	 */
 	public void stop() {
-		super.stop();
-		bot.driveBase.setFeedbackActive(false);
+		bot.driveBase.setMotionProfileActive(false);
 	}
 }

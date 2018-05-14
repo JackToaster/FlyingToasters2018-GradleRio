@@ -3,7 +3,7 @@ package org.theflyingtoasters.commands;
 import org.theflyingtoasters.hardware.Lift;
 import org.theflyingtoasters.robot.Robot;
 import org.theflyingtoasters.toaster_commands.Command;
-import org.theflyingtoasters.toaster_commands.CommandCallback;
+import org.theflyingtoasters.toaster_commands.CommandScheduler;
 import org.theflyingtoasters.utilities.Logging;
 
 public class LiftCommand extends Command{
@@ -12,8 +12,8 @@ public class LiftCommand extends Command{
 	Lift.Positions pos;
 	Robot bot;
 	double startTimeout;
-	public LiftCommand(CommandCallback opMode, Robot robot, Lift.Positions position) {
-		super(opMode, "Intake Command: " + position.name());
+	public LiftCommand(CommandScheduler opMode, Robot robot, Lift.Positions position) {
+		super(opMode);
 		pos = position;
 		bot = robot;
 	}
@@ -31,5 +31,10 @@ public class LiftCommand extends Command{
 			Logging.h("EndCommand called!");
 			endCommand();
 		}
+	}
+
+	@Override
+	public void stop() {
+		
 	}
 }
