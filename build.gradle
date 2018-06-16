@@ -6,7 +6,9 @@ plugins {
 }
 
 def TEAM = 3641
-def ROBOT_CLASS = "robot.Robot"
+def ROBOT_CLASS = "org.theflyingtoasters.robot.Robot"
+
+
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -29,6 +31,9 @@ dependencies {
     compile wpilib()
     compile ctre()
     compile navx()
+
+    // Compile local libraries from libs/ directory
+    compile files('libs/Jama-1.0.3.jar')
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
