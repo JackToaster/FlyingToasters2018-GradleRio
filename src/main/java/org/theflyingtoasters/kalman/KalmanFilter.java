@@ -85,13 +85,12 @@ public class KalmanFilter
      */
     public void measurementUpdate(Matrix Xk)
     {
-        //Matrix Hk = H.getModel(X, dT);
-        // compute kalman gain
-        //Kk+1 = PkHT(H PkHT + R)-1
+        // compute Kalman gain
+        // Kk+1 = PkHT(H Pk HT + R)-1
         Matrix K = (P.times(H.transpose())).times((H.times(P).times(H.transpose()).plus(R)).inverse());
 
         // update x
-        // xk+1 = xk + K(zk+1 − Hxk )
+        // xk+1 = xk + K(zk+1 − H Xk )
         X = X.plus(K.times((H.times(Xk)).minus(H.times(X))));
 
         // update P

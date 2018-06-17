@@ -3,6 +3,37 @@ package org.theflyingtoasters.kalman;
 import Jama.Matrix;
 
 public class RobotPoseKF {
+    /**
+     * Stores the robot's state and covariance. Used as an output, and (eventually)
+     * adding older timestamped sensor data.
+     */
+    static class StateWithCovariance{
+
+        public Matrix robotState; // X matrix from KF
+        public Matrix covariance; // P matrix from KF
+
+        public StateWithCovariance(Matrix X, Matrix P){
+            robotState = X;
+            covariance = P;
+        }
+        public Matrix getRobotState() {
+            return robotState;
+        }
+
+        public void setRobotState(Matrix robotState) {
+            this.robotState = robotState;
+        }
+
+        public Matrix getCovariance() {
+            return covariance;
+        }
+
+        public void setCovariance(Matrix covariance) {
+            this.covariance = covariance;
+        }
+
+    }
+
     //TODO set the mass & moment of inertia properly
     static final double robotMassKg = 54;
     // Assumes the bot is a 1m diameter cylinder for next two:
@@ -10,7 +41,7 @@ public class RobotPoseKF {
     static final double robotRadius = 0.5;
 
     // The time stepped forward in each update step
-    static final double deltaTime = 0.01;
+    static final double dStepTime = 0.01;
 
     KalmanFilter kf;
 
@@ -49,8 +80,8 @@ public class RobotPoseKF {
             {0,                       0,                       0, 0},
             {0,                       0,                       0, 0},
             {0,                       0,                       1, 0},
-            {deltaTime,               deltaTime,               0, 0},
-            {deltaTime * robotRadius, deltaTime * robotRadius, 0, 1}},
+            {dStepTime,               dStepTime,               0, 0},
+            {dStepTime * robotRadius, dStepTime * robotRadius, 0, 1}},
             5, 4);
 
     /**
@@ -70,7 +101,32 @@ public class RobotPoseKF {
             {0,0,1,0},
             {0,0,0,1}
     });
+
+    private StateWithCovariance current; // Stores the current state/covariance matrices.
+
+    private double k = 0; // Time since initializing the KF. This is used to determine how many steps to compute.
+    private long timeStepsTaken = 0; // Number of time steps taken since initializing.
+
     public RobotPoseKF() {
-        kf = new KalmanFilter(latestState, H, R, Q, A, B,  1, deltaTime);
+        kf = new KalmanFilter(latestState, H, R, Q, A, B,  1, dStepTime);
+    }
+
+    public void predictionUpdate(double deltaTime, Matrix controlVector){
+        k += deltaTime;
+        final double updateTime = k - (double)(timeStepsTaken * dStepTime);
+        final int numTimeSteps = (int) (updateTime / dStepTime);
+
+        for(int i = 0; i < numTimeSteps; i++){
+            kf.predictionUpdate(controlVector);
+        }
+    }
+
+    public void measurementUpdate(Matrix measurementVector){
+        kf.measurementUpdate(measurementVector);
+    }
+
+
+    public StateWithCovariance getCurrent(){
+        return current;
     }
 }
