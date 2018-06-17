@@ -23,14 +23,16 @@ public class KalmanFilter
     private Matrix P; // state covariance matrix
 
     // constant parameters
-    private final Matrix H; // observation matrix
     private final Matrix I; // the identity matrix of the proper size for the state covariance matrix
     private final Matrix R; // measurement noise covariance matrix
-    private final Matrix Q; // Process covariance matrix
+    private final Matrix Q; // Process covariance matrix. If elements of the state vector are
+                            // unrelated, then this is usually just a diagonal matrix of small values.
+
 
     // Model parameters
     private final StateDependantModel A; // The model of the system, applied during update steps.
     private final StateDependantModel B; // The matrix to apply control inputs to the model
+    private final Matrix H; // observation matrix. X * H = expected sensor readings.
 
     /**
      * Create a Kalman filter with the given parameters
@@ -83,6 +85,7 @@ public class KalmanFilter
      */
     public void measurementUpdate(Matrix Xk)
     {
+        //Matrix Hk = H.getModel(X, dT);
         // compute kalman gain
         //Kk+1 = PkHT(H PkHT + R)-1
         Matrix K = (P.times(H.transpose())).times((H.times(P).times(H.transpose()).plus(R)).inverse());
