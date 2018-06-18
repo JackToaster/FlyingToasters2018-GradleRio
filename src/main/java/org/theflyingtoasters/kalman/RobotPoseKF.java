@@ -94,12 +94,14 @@ public class RobotPoseKF {
     /**
      * Measurement covariance matrix. Represents the variance (std. deviation squared)
      * of each sensor and covariance between them.
+     * Since none of our sensors measure the same thing (yet), only values along the
+     * diagonal of the matrix are used.
      */
     private static final Matrix R = new Matrix(new double[][]{
-            {1,0,0,0},
-            {0,1,0,0},
-            {0,0,1,0},
-            {0,0,0,1}
+            {0.04,0,   0,     0},
+            {0,   0.04,0,     0},
+            {0,   0,   0.0003,0},
+            {0,   0,   0,     0.02}
     });
 
     private StateWithCovariance current; // Stores the current state/covariance matrices.
@@ -108,7 +110,7 @@ public class RobotPoseKF {
     private long timeStepsTaken = 0; // Number of time steps taken since initializing.
 
     public RobotPoseKF() {
-        kf = new KalmanFilter(latestState, H, R, Q, A, B,  1, dStepTime);
+        kf = new KalmanFilter(latestState, H, R, Q, A, B, 1, dStepTime);
     }
 
     public void predictionUpdate(double deltaTime, Matrix controlVector){

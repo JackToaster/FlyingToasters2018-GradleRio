@@ -91,14 +91,13 @@ public class UDP
 			byte[] buf = null;
 			buf = new byte[256];	//Creates the byte array for the response
 			packet = new DatagramPacket(buf, buf.length); //Prepares to receive the packet
-			socket.receive(packet);	//Receives the packet from the pi
+			socket.receive(packet);
 			String response = new String(buf, 0, packet.getLength()); //Converts the byte array to a string
 			return response;
 		}
 		catch (Exception e)
 		{
-			Console.printWarning(e.getMessage());
-			Console.printWarning("UDP Error.");
+			Logging.e(e.getMessage());
 			return null;
 		}	
 	}
