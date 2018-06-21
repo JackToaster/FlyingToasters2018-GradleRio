@@ -1,10 +1,15 @@
 package org.theflyingtoasters.utilities;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class UDP
 {
+	static final int SCALE_PORT = 3641;
+	static UDP scaleListener;
+
 	static int port;
 	static InetAddress address;
 	static DatagramSocket socket;
@@ -23,7 +28,7 @@ public class UDP
 		{
 			port = Port;
 			address = InetAddress.getByName(IP);
-			socket = new DatagramSocket(3641);
+			socket = new DatagramSocket(Port);
 			buf = new byte[256];
 			socket.setSoTimeout(1);
 		}
@@ -36,7 +41,7 @@ public class UDP
 	/**
 	 * Get the most recent message.
 	 * 
-	 * @param oldResponse The last message it got.
+	 * @param oldResponse The last medouble getScaleAnglessage it got.
 	 * @return The most recent message.
 	 */
 	public String flush(String oldResponse)
@@ -97,9 +102,30 @@ public class UDP
 		}
 		catch (Exception e)
 		{
-			Logging.e(e.getMessage());
+			Logging.h("Error happened reading UDP data");
 			return null;
 		}	
+	}
+
+	public static void startScaleListener(){
+		String driverStationIP = SmartDashboard.getString("DS IP", "10.36.41.43");
+		scaleListener = new UDP(driverStationIP, SCALE_PORT);
+	}
+
+	public static double getScaleAngle(int advance){
+		try {
+			String data = scaleListener.getData();
+			//if(data == null) Logging.h("Data null");
+			if (data.length() < 1)
+				return 0;
+			else {
+				String[] numbers = data.split(",");
+				return Double.parseDouble(numbers[advance]);
+			}
+		}catch(Exception e){
+			//Logging.e(e.getStackTrace());
+			return 0;
+		}
 	}
 
 }

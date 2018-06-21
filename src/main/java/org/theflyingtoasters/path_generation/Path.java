@@ -16,7 +16,7 @@ public class Path {
     public static final double maxAccel = 3;
     public static final int defaultPoints = 100;
     public static final VelocityMode defaultVelocityMode = VelocityMode.TRAPAZOIDAL;
-    public static final SplineMode defaultSplineMode = SplineMode.QUINTIC_HERMITE;
+    public static final SplineMode defaultSplineMode = SplineMode.BEZIER;
 
     /**
      * a path consists of a list of waypoints.

@@ -25,10 +25,10 @@ public class LiftCommand extends Command{
 	
 	public void periodic(double deltaTime) {
 		startTimeout += deltaTime;
-		Logging.h("Error: " + bot.lift.getTotalError());
-		Logging.h("Timeout: " + startTimeout);
+		Logging.l("Error: " + bot.lift.getTotalError());
+		Logging.l("Timeout: " + startTimeout);
 		if(startTimeout > START_TIME && bot.lift.getTotalError() < MAX_ERROR) {
-			Logging.h("EndCommand called!");
+			Logging.l("EndCommand called!");
 			endCommand();
 		}
 	}

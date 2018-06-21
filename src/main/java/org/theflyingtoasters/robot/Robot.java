@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.theflyingtoasters.utilities.UDP;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -42,6 +43,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
     enum Auton {
         AUTO_LINE("Auto Line auton"),
         AUTO_SWITCH("Switch auton"),
+        TURN_TEST("Test turn 90 degrees"),
         //		AUTO_SWITCH_2C("Two Cube Switch auton"),
 //		AUTO_SCALE_L("(Reverse) Left Scale auton"), 
 //		AUTO_SCALE_R("(Reverse) Right Scale auton"),
@@ -184,6 +186,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
 
         Logging.init();
         Logging.h("Robot Started.");
+        SmartDashboard.putString("DS IP", "10.36.41.??");
     }
 
     /**
@@ -237,6 +240,9 @@ public class Robot extends IterativeRobot implements CommandCallback {
                 break;
             case AUTO_SWITCH:
                 autonomous = new SwitchAuton(this, gameData);
+                break;
+            case TURN_TEST:
+                autonomous = new TurnTestAuto(this);
                 break;
 //		case AUTO_SWITCH_2C:
 //			autonomous = new SwitchAuton2Cube(this, gameData);
@@ -353,6 +359,8 @@ public class Robot extends IterativeRobot implements CommandCallback {
             standardPeriodic();
             teleop.periodic(deltaTime);
         }
+
+        //Logging.h(UDP.getScaleAngle(0));
     }
 
     /**
@@ -394,6 +402,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
         }
         if (pdp != null) pdp.periodic(deltaTime);
         lift.logToDashboard();
+
     }
 
     /**
@@ -403,6 +412,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
     private void standardInit() {
         isFirstPeriodic = true;
         resetTimer();
+        UDP.startScaleListener();
     }
 
     /**

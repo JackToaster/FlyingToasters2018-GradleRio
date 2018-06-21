@@ -89,13 +89,14 @@ public class Lift {
 		SWITCH(-365, 667),
 		H_SWITCH(-475, 667),
 		L_SCALE(-695, 621),
+		LL_SCALE(-550, 621),
 		H_SCALE(-737, 627),
 		CLIMB(-777, 618),
 		CLIMB_ENGAGED(-475, 618),
 		STARTING(-418, 618),
 		STARTING_FLIP(-418, 667);
 
-		double liftPos;
+        double liftPos;
 		double flipPos;
 
 		Positions(double lP, double fP) {
