@@ -186,7 +186,8 @@ public class Robot extends IterativeRobot implements CommandCallback {
 
         Logging.init();
         Logging.h("Robot Started.");
-        SmartDashboard.putString("DS IP", "10.36.41.??");
+        // Don't need DS IP for one-way UDP comms.
+        //SmartDashboard.putString("DS IP", "10.36.41.??");
     }
 
     /**
@@ -360,7 +361,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
             teleop.periodic(deltaTime);
         }
 
-        //Logging.h(UDP.getScaleAngle(0));
+        Logging.h(UDP.getScaleAngle(0));
     }
 
     /**

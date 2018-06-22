@@ -1,9 +1,6 @@
 package org.theflyingtoasters.commands.autonomous;
 
-import org.theflyingtoasters.commands.DelayedCommand;
-import org.theflyingtoasters.commands.IntakeCommand;
-import org.theflyingtoasters.commands.LiftCommand;
-import org.theflyingtoasters.commands.MotionProfileCommand;
+import org.theflyingtoasters.commands.*;
 import org.theflyingtoasters.commands.interfaces.Command;
 import org.theflyingtoasters.commands.interfaces.OpMode;
 import org.theflyingtoasters.hardware.Intake;
@@ -101,6 +98,7 @@ public class Scale3CubeAutoFast extends OpMode {
 
 		// Indicates whether the paths should be mirrored
 		final boolean mirrored = !startOnLeft;
+		final boolean scaleLeft = gameData.charAt(1) == 'L';
 
 		if (gameData.charAt(1) == 'L' && startOnLeft || gameData.charAt(1) == 'R' && !startOnLeft) {
 			cross = false;
@@ -119,11 +117,11 @@ public class Scale3CubeAutoFast extends OpMode {
 			driveToDump3rdCube = new MotionProfileCommand(this, robot, "go to dump cube 3", true, mirrored,
 					MotionProfileCommand.Speed.MED, left3rdCube);
 			driveToDump3rdCube.removeExtraEndTime();
-			
+
 			output3 = new IntakeCommand(this, bot, State.OUTPUTTING);
 			raise3 = new LiftCommand(this, bot, Positions.L_SCALE)
 					.delay(driveToDump3rdCube.getDuration() - longLiftEndTime);
-			
+
 		} else {
 			cross = true;
 			if (SmartDashboard.getBoolean("Allow Auton Opposite Side", true)) {
@@ -156,13 +154,13 @@ public class Scale3CubeAutoFast extends OpMode {
 		 * } else {
 		 */
 		if (!cross)
-			raise1 = new LiftCommand(this, bot, Positions.H_SCALE).delay(mpCommand.getDuration() - liftEndTime);
+			raise1 = new AutoLiftCommand(this, bot, scaleLeft).delay(mpCommand.getDuration() - liftEndTime);
 		else
-			raise1 = new LiftCommand(this, bot, Positions.H_SCALE);
+			raise1 = new AutoLiftCommand(this, bot, scaleLeft);
 		// }
 		lower1 = new LiftCommand(this, bot, Positions.GROUND);
 		output1 = new IntakeCommand(this, bot, State.OUTPUTTING);
-		raise2 = new LiftCommand(this, bot, Positions.H_SCALE)
+		raise2 = new AutoLiftCommand(this, bot, scaleLeft)
 				.delay(driveToDump2ndCube.getDuration() - longLiftEndTime);
 
 		lower2 = new LiftCommand(this, bot, Positions.GROUND);
