@@ -1,9 +1,7 @@
 package org.theflyingtoasters.hardware;
 
 import org.theflyingtoasters.controllers.PIDcontroller;
-import org.theflyingtoasters.controllers.motion_profiles.MotionProfile;
-import org.theflyingtoasters.controllers.motion_profiles.SkidsteerProfileGenerator;
-import org.theflyingtoasters.controllers.motion_profiles.WheelProfileGenerator;
+import org.theflyingtoasters.controllers.motion_profiles.*;
 import org.theflyingtoasters.hardware.interfaces.DriveBase;
 import org.theflyingtoasters.path_generation.Path;
 import org.theflyingtoasters.path_generation.Waypoint;
@@ -33,16 +31,25 @@ public class DriveBase2018 extends DriveBase {
 	final static double velGain = 0.255;
 	final static double accelGain = 0.003;
 
-	private PIDcontroller leftMotionProfilePID = new PIDcontroller(6.5, 13, 0.275);
-	private PIDcontroller rightMotionProfilePID = new PIDcontroller(6.5, 13, 0.275);
-	private WheelProfileGenerator leftProfileGen;
-	private WheelProfileGenerator rightProfileGen;
 
-	public MotionProfile leftMotionProfile;
-	public MotionProfile rightMotionProfile;
+
+
+	//TODO TUNE PIDS FOR LINEAR/ANGULAR MOTION
+	//linMotionProfilePID should be close, but angMotionProfilePID (for turning)
+	//will not be.
+	//Tune driving straight first, then tune in turning.
+	private PIDcontroller linMotionProfilePID = new PIDcontroller(6.5, 13, 0.275);
+	private PIDcontroller angMotionProfilePID = new PIDcontroller(6.5, 13, 0.275);
+	private WheelProfileGenerator profileGen;
+
+	public DualPIDMotionProfile leftMotionProfile;
+	public DualPIDMotionProfile rightMotionProfile;
 
 	public double leftPower = 0;
 	public double rightPower = 0;
+
+
+	private double angleOffset = 0;
 
 	public enum Motors {
 		LEFT0(3), LEFT1(4), LEFT2(13), RIGHT0(1), RIGHT1(2), RIGHT2(12);
@@ -82,15 +89,18 @@ public class DriveBase2018 extends DriveBase {
 		registerMotorController(left);
 		registerMotorController(right);
 
-		// TODO set offsets appropriately
-		leftProfileGen = new SkidsteerProfileGenerator(-wheelDistance / 2);
-		rightProfileGen = new SkidsteerProfileGenerator(wheelDistance / 2);
 
-		leftMotionProfilePID.setDOnMeasurement(false);
-		rightMotionProfilePID.setDOnMeasurement(false);
+		profileGen = new CenterProfileGenerator();
 
-		leftMotionProfile = new MotionProfile(leftMotionProfilePID, velGain, accelGain, leftProfileGen);
-		rightMotionProfile = new MotionProfile(rightMotionProfilePID, velGain, accelGain, rightProfileGen);
+		linMotionProfilePID.setDOnMeasurement(false);
+		angMotionProfilePID.setDOnMeasurement(false);
+
+		//If the robot turns the wrong way, change the signs of both angEffects. If it goes forward or backwards instead
+        // of turning, change the sign on one of the angEffects.
+		leftMotionProfile = new DualPIDMotionProfile(linMotionProfilePID, angMotionProfilePID, -1, velGain, accelGain, profileGen);
+		rightMotionProfile = new DualPIDMotionProfile(linMotionProfilePID, angMotionProfilePID, 1, velGain, accelGain, profileGen);
+
+        resetAngle();
 	}
 
 	public double getWheelVelocity() {
@@ -100,8 +110,27 @@ public class DriveBase2018 extends DriveBase {
 		v = Utilities.expInput(v,1.4);
 		return v;
 	}
-	
+
+	//TODO Implement this with gyro instead of encoders
+
+    /**
+     * @return the angle of the robot's drivebase.
+     */
+    public double getAngle(){
+        //Just find based on encoder stuff. THIS IS BAD! CHANGE THIS!
+        return (right.getPosition() - left.getPosition()) / wheelDistance * 2 + angleOffset;
+    }
+
+    private double getRawAngle(){
+        return (right.getPosition() - left.getPosition()) / wheelDistance * 2;
+    }
+
+    public void resetAngle(){
+        angleOffset = getRawAngle();
+    }
+
 	public void update(double dT) {
+	    leftMotionProfile.setState((left.getPosition() + right.getPosition()) / 2.0, getAngle());
 		super.update(dT);
 		SmartDashboard.putNumber("left current", left.feedbackTalon.talon.getOutputCurrent());
 		SmartDashboard.putNumber("right current", right.feedbackTalon.talon.getOutputCurrent());
