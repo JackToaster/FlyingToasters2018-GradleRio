@@ -34,7 +34,7 @@ public class MotionProfileCommand extends Command {
 	 */
 	public enum Speed {
 		SAFE(0.5, 0.5), SLOW(1, 3), MED(2, 3), FAST(3, 4), LIGHTSPEED(3.75, 4), LUDICROUS_SPEED(10,
-				10), SLOW_LOW_ACCEL(1, 1), MED_LOW_ACCEL(2, 1.5), FAST_LOW_ACCEL(3, 1.75);
+				10), SLOW_LOW_ACCEL(1, 1), MED_LOW_ACCEL(2, 1.5), FAST_LOW_ACCEL(3, 1.59);
 
 		double vel, accel;
 

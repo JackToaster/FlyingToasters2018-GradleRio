@@ -65,7 +65,7 @@ public class Scale3CubeAutoFast extends OpMode {
 	private IntakeCommand intakeCommand2;
 
 	// Amount of time before the end of the motion profile to lift
-	final static double liftEndTime = 1;
+	final static double liftEndTime = 1.3;
 	final static double longLiftEndTime = 2.9;
 
 	private Command raise1;
@@ -103,7 +103,7 @@ public class Scale3CubeAutoFast extends OpMode {
 		if (gameData.charAt(1) == 'L' && startOnLeft || gameData.charAt(1) == 'R' && !startOnLeft) {
 			cross = false;
 			mpCommand = new MotionProfileCommand(this, robot, "mp command", true, mirrored,
-					MotionProfileCommand.Speed.MED_LOW_ACCEL, leftPath);
+					MotionProfileCommand.Speed.FAST_LOW_ACCEL, leftPath);
 			mpCommand.removeExtraEndTime();
 			getCube2Command = new MotionProfileCommand(this, robot, "Get left cube", false, mirrored,
 					MotionProfileCommand.Speed.SLOW, leftGetCube2);

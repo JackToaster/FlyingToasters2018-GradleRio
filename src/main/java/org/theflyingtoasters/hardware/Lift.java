@@ -89,7 +89,7 @@ public class Lift {
 		SWITCH(-365, 667),
 		H_SWITCH(-475, 667),
 		L_SCALE(-695, 621),
-		LL_SCALE(-590, 621),
+		LL_SCALE(-610, 621),
 		H_SCALE(-737, 627),
 		CLIMB(-777, 618),
 		CLIMB_ENGAGED(-475, 618),
