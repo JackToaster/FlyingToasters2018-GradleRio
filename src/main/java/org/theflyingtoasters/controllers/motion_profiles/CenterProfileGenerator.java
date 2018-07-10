@@ -19,7 +19,7 @@ public class CenterProfileGenerator/* extends WheelProfileGenerator */{
             if (isBackwards) {
                 currentMPPoint = new CenterMPPoint(-wp.velocity, -wp.distance, wp.time, wp.rotation);
             } else {
-                currentMPPoint = new CenterMPPoint(wp.velocity, wp.distance, wp.time, wp.rotation);
+                currentMPPoint = new CenterMPPoint(wp.velocity, wp.distance, wp.time, wp.rotation + Math.PI);
             }
             outProfile.setPoint(i, currentMPPoint);
         }
