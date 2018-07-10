@@ -134,8 +134,8 @@ public class DriveBase2018 extends DriveBase {
 	public void update(double dT) {
 	    motionProfile.setState((left.getPosition() + right.getPosition()) / 2.0, getAngle());
 		super.update(dT);
-		SmartDashboard.putNumber("left current", left.feedbackTalon.talon.getOutputCurrent());
-		SmartDashboard.putNumber("right current", right.feedbackTalon.talon.getOutputCurrent());
+		//SmartDashboard.putNumber("left current", left.feedbackTalon.talon.getOutputCurrent());
+		//SmartDashboard.putNumber("right current", right.feedbackTalon.talon.getOutputCurrent());
 		SmartDashboard.putNumber("left position", left.getPosition());
 		SmartDashboard.putNumber("right position", right.getPosition());
 		motionProfile.writeErrorToDashboard("MP error");

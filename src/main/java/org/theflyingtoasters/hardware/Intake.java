@@ -115,9 +115,9 @@ public class Intake {
 		velocity *= MAX_INTAKE_VELOCITY;
 		leftTalon.talon.set(ControlMode.Velocity, velocity);
 		rightTalon.talon.set(ControlMode.Velocity, -velocity);
-		SmartDashboard.putNumber("Intake Target Velocity", velocity);
-		SmartDashboard.putNumber("Left Intake Velocity Error", velocity - leftTalon.talon.getSelectedSensorVelocity(0));
-		SmartDashboard.putNumber("Right Intake Velocity Error", velocity - rightTalon.talon.getSelectedSensorVelocity(0));
+		//SmartDashboard.putNumber("Intake Target Velocity", velocity);
+		//SmartDashboard.putNumber("Left Intake Velocity Error", velocity - leftTalon.talon.getSelectedSensorVelocity(0));
+		//SmartDashboard.putNumber("Right Intake Velocity Error", velocity - rightTalon.talon.getSelectedSensorVelocity(0));
 	}
 	
 	public void periodic(double deltaTime) {
@@ -197,11 +197,11 @@ public class Intake {
 			time = 0;
 			break;
 		}
-		SmartDashboard.putString("Intake State", currentState.toString());
+		//SmartDashboard.putString("Intake State", currentState.toString());
 		SmartDashboard.putBoolean("Has Cube?", hasCube());
-		SmartDashboard.putNumber("Intake Time", time);
-		SmartDashboard.putNumber("Left Intake Velocity", leftTalon.talon.getSelectedSensorVelocity(0));
-		SmartDashboard.putNumber("Right Intake Velocity", rightTalon.talon.getSelectedSensorVelocity(0));
+		//SmartDashboard.putNumber("Intake Time", time);
+		//.putNumber("Left Intake Velocity", leftTalon.talon.getSelectedSensorVelocity(0));
+		//SmartDashboard.putNumber("Right Intake Velocity", rightTalon.talon.getSelectedSensorVelocity(0));
 	}
 
 	

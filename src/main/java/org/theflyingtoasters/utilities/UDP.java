@@ -94,8 +94,8 @@ public class UDP {
     }
 
     public static void startScaleListener() {
-        String driverStationIP = SmartDashboard.getString("DS IP", "10.36.41.43");
-        scaleListener = new UDP(driverStationIP, SCALE_PORT);
+        //String driverStationIP = SmartDashboard.getString("DS IP", "10.36.41.43");
+        scaleListener = new UDP("", SCALE_PORT);
         if(scaleListenerThread != null)
             scaleListenerThread.interrupt();
 

@@ -399,7 +399,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
         deltaTime = currentTime - lastTime;
         lastTime = currentTime;
         if (pdp == null && ds.isDSAttached()) {
-            SmartDashboard.putString("Event Info", ds.getEventName() + " " + ds.getMatchType().toString() + " " + ds.getMatchNumber());
+            //SmartDashboard.putString("Event Info", ds.getEventName() + " " + ds.getMatchType().toString() + " " + ds.getMatchNumber());
             pdp = new PDP();
         }
         if (pdp != null) pdp.periodic(deltaTime);

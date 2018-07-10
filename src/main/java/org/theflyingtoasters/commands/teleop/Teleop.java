@@ -68,13 +68,13 @@ public class Teleop extends OpMode {
 		
 		robot.lift.readTuningValuesFromDashboard();
 //		robot.intake.readTuningValuesFromDashboard();
-		
+		/*
 		if (SmartDashboard.getBoolean("Manual enabled", true)) {
 			robot.lift.disableMotionMagic();
 		}
 
 		op.checkControllerType();
-		
+		*/
 		
 		
 		brownout = false;
@@ -231,7 +231,7 @@ public class Teleop extends OpMode {
 //			SmartDashboard.putNumber("E3D Throttle axis", op.e3d.getAxis(E3D.Axis.THROTTLE));
 //			robot.lift.driveNoFeedback(liftPower, flipPower);
 //		}
-		SmartDashboard.putString("Match", robot.ds.getEventName() + robot.ds.getMatchNumber());
+		//SmartDashboard.putString("Match", robot.ds.getEventName() + robot.ds.getMatchNumber());
 	}
 	
 	/**

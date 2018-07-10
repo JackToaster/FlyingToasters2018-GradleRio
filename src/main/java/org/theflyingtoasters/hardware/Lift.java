@@ -349,13 +349,13 @@ public class Lift {
 	public void logToDashboard() {
 		SmartDashboard.putString("Lift setpoint name", currentPos.name());
 		SmartDashboard.putNumber("lift encoder pos", liftMotor.feedbackTalon.getRawPosition());
-		SmartDashboard.putNumber("lift closed loop error", liftMotor.feedbackTalon.getRawCLError());
+		//SmartDashboard.putNumber("lift closed loop error", liftMotor.feedbackTalon.getRawCLError());
 		SmartDashboard.putNumber("flip encoder pos", flipMotor.getRawPosition());
-		SmartDashboard.putNumber("flip closed loop error", flipMotor.getRawCLError());
-		SmartDashboard.putNumber("flip talon output voltage", flipMotor.talon.getMotorOutputVoltage());
-		SmartDashboard.putNumber("Lift motor output voltage", liftMotor.feedbackTalon.talon.getMotorOutputVoltage());
-		SmartDashboard.putBoolean("Lift lim switch", limSwitchVal);
-		SmartDashboard.putBoolean("Resetting Down", resettingDown);
+		//SmartDashboard.putNumber("flip closed loop error", flipMotor.getRawCLError());
+		//SmartDashboard.putNumber("flip talon output voltage", flipMotor.talon.getMotorOutputVoltage());
+		//SmartDashboard.putNumber("Lift motor output voltage", liftMotor.feedbackTalon.talon.getMotorOutputVoltage());
+		//SmartDashboard.putBoolean("Lift lim switch", limSwitchVal);
+		//SmartDashboard.putBoolean("Resetting Down", resettingDown);
 	}
 
 	/**
