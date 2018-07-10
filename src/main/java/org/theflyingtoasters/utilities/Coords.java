@@ -1,5 +1,7 @@
 package org.theflyingtoasters.utilities;
 
+import org.opencv.core.Mat;
+
 public class Coords
 {
 	/**
@@ -90,6 +92,34 @@ public class Coords
 		{
 			counterClockwiseDistance = fixDegrees(targetAngle - currentAngle);
 			clockwiseDistance = fixDegrees(360 - (targetAngle - currentAngle));
+
+			if(Math.abs(counterClockwiseDistance) < Math.abs(clockwiseDistance)) return counterClockwiseDistance;
+			else return -clockwiseDistance;
+		}
+	}
+
+	/**
+	 * Takes an angle in radians and finds a coterminal angle where 0<=θ<2pi.
+	 *
+	 * @param radians
+	 * @return
+	 */
+	public static double fixRadians(double radians)
+	{
+		while(radians >= 2 * Math.PI) radians -= 2 * Math.PI;
+		while(radians < 0) radians += 360;
+		return radians;
+	}
+
+	public static double calcAngleErrorRad(double targetAngle, double currentAngle)
+	{
+		double counterClockwiseDistance, clockwiseDistance;
+
+		if(targetAngle == currentAngle) return 0;
+		else
+		{
+			counterClockwiseDistance = fixRadians(targetAngle - currentAngle);
+			clockwiseDistance = fixRadians(2 * Math.PI - (targetAngle - currentAngle));
 
 			if(Math.abs(counterClockwiseDistance) < Math.abs(clockwiseDistance)) return counterClockwiseDistance;
 			else return -clockwiseDistance;

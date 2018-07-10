@@ -2,6 +2,7 @@ package org.theflyingtoasters.hardware;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Climber {
@@ -23,18 +24,17 @@ public class Climber {
 	private Servo riggingServo;
 	private Servo forkServo;
 	
-	private Talon left;
-	public static Talon right = new Talon(RIGHT);
+	private Talon left = new Talon(LEFT);
+	private Talon right = new Talon(RIGHT);
 
 	public Climber() {
+		IMU.pigeon = new PigeonIMU(right.talon);
+
 		riggingServo = new Servo(RIGGING_PORT);
 		forkServo = new Servo(FORK_PORT);
 		
 		closeServos();
-		
-		left = new Talon(LEFT);
-//		right.followMaster(left);
-		
+
 		left.setInverted(false);
 		right.setInverted(true);
 		

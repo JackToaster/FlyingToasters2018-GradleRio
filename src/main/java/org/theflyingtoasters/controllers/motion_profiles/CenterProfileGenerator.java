@@ -16,11 +16,14 @@ public class CenterProfileGenerator/* extends WheelProfileGenerator */{
             Waypoint wp = p.waypoints.get(i);
 
             CenterMPPoint currentMPPoint;
+
+            //Set distances, velocities, and angles backwards if the robot has to drive backwards
             if (isBackwards) {
                 currentMPPoint = new CenterMPPoint(-wp.velocity, -wp.distance, wp.time, wp.rotation);
             } else {
                 currentMPPoint = new CenterMPPoint(wp.velocity, wp.distance, wp.time, wp.rotation + Math.PI);
             }
+            //Set the point in the profile!
             outProfile.setPoint(i, currentMPPoint);
         }
 

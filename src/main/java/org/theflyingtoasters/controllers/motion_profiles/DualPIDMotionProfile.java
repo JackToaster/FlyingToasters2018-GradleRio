@@ -2,6 +2,7 @@ package org.theflyingtoasters.controllers.motion_profiles;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.theflyingtoasters.controllers.AbstractFeedbackController;
+import org.theflyingtoasters.controllers.AngularPID;
 import org.theflyingtoasters.controllers.PIDcontroller;
 import org.theflyingtoasters.path_generation.Path;
 import org.theflyingtoasters.utilities.Logging;
@@ -20,7 +21,7 @@ public class DualPIDMotionProfile /*implements AbstractFeedbackController*/ {
     private double offset;
 
     public PIDcontroller distPid;
-    public PIDcontroller angPid;
+    public AngularPID angPid;
 
     public double kV = 0;
     public double kA = 0;
@@ -38,7 +39,7 @@ public class DualPIDMotionProfile /*implements AbstractFeedbackController*/ {
      * @param wheelProfileGen
      *            the wheelProfileGenerator to use to transform the path
      */
-    public DualPIDMotionProfile(PIDcontroller pidController, PIDcontroller angPid, double angEffect, double velGain, double accelGain,
+    public DualPIDMotionProfile(PIDcontroller pidController, AngularPID angPid, double angEffect, double velGain, double accelGain,
                          CenterProfileGenerator wheelProfileGen) {
         distPid = pidController;
         this.angPid = angPid;
@@ -63,7 +64,7 @@ public class DualPIDMotionProfile /*implements AbstractFeedbackController*/ {
      * @param p
      *            the profile to follow
      */
-    public DualPIDMotionProfile(PIDcontroller distPid, PIDcontroller angPid, double angEffect, double velGain, double accelGain,
+    public DualPIDMotionProfile(PIDcontroller distPid, AngularPID angPid, double angEffect, double velGain, double accelGain,
                                 CenterProfileGenerator wheelProfileGen, CenterProfile p) {
         this.distPid = distPid;
         this.angPid = angPid;

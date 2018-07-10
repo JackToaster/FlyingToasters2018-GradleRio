@@ -13,13 +13,14 @@ import org.theflyingtoasters.utilities.Logging;
 
 // TODO add fancy class that does all the stuff the old PID did
 public class PIDcontroller extends ProportionalController implements AbstractFeedbackController {
-	private double kI, kD;
+	protected double kI;
+	protected double kD;
 	private boolean dOnMeasurement = false;
-	private double maxIntegral;
-	private boolean limitIntegral = false;
-	private double integral = 0;
-	private double lastReading = 0;
-	private double lastError = 0;
+	protected double maxIntegral;
+	protected boolean limitIntegral = false;
+	protected double integral = 0;
+	protected double lastReading = 0;
+	protected double lastError = 0;
 
 	/**
 	 * create a PID controller with no feedforward
@@ -175,6 +176,7 @@ public class PIDcontroller extends ProportionalController implements AbstractFee
 		// return the value
 		return proportionalValue + integralValue + derivativeValue;
 	}
+
 
 	@Override
 	/**
