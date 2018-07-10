@@ -173,9 +173,15 @@ public class Teleop extends OpMode {
 		} else if (op.isPressed(Operator.Button.HIGH_SWITCH)) {
 			robot.lift.trackToPos(Lift.Positions.H_SWITCH);
 		} else if (op.isPressed(Operator.Button.LOW_SCALE)) {
-			robot.lift.trackToPos(Lift.Positions.L_SCALE);
+			if (op.isDown(Operator.Button.HIGH_SCALE))
+				robot.lift.trackToPos(Lift.Positions.L_SCALE);
+			else
+				robot.lift.trackToPos(Lift.Positions.LL_SCALE);
 		} else if (op.isPressed(Operator.Button.HIGH_SCALE)) {
-			robot.lift.trackToPos(Lift.Positions.H_SCALE);
+			if (op.isDown(Operator.Button.LOW_SCALE))
+				robot.lift.trackToPos(Lift.Positions.L_SCALE);
+			else
+				robot.lift.trackToPos(Lift.Positions.H_SCALE);
 		} else if(op.isPressed(Operator.Button.START_CLIMB)) {
 			robot.lift.trackToPos(Lift.Positions.CLIMB);
 		} else if(op.isPressed(Operator.Button.END_CLIMB)) {
