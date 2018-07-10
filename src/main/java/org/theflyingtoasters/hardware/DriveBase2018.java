@@ -1,5 +1,6 @@
 package org.theflyingtoasters.hardware;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
 import org.theflyingtoasters.controllers.PIDcontroller;
 import org.theflyingtoasters.controllers.motion_profiles.*;
 import org.theflyingtoasters.hardware.interfaces.DriveBase;
@@ -20,9 +21,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class DriveBase2018 extends DriveBase {
+	private static Talon PIGEON_TALON;
+
 	public FeedbackLinkedCAN left;
 	public FeedbackLinkedCAN right;
-	
+
+	PigeonIMU imu;
+
 	private final static double MAX_VELOCITY = 3400;
 	
 	public final static double wheelDistance = 0.665;
@@ -38,9 +43,9 @@ public class DriveBase2018 extends DriveBase {
 	//linMotionProfilePID should be close, but angMotionProfilePID (for turning)
 	//will not be.
 	//Tune driving straight first, then tune in turning.
-	private PIDcontroller linMotionProfilePID = new PIDcontroller(6.5, 13, 0.275);
-	private PIDcontroller angMotionProfilePID = new PIDcontroller(6.5, 13, 0.275);
-	private WheelProfileGenerator profileGen;
+	private PIDcontroller linMotionProfilePID = new PIDcontroller(3.25, 5.5, 0.11);
+	private PIDcontroller angMotionProfilePID = new PIDcontroller(1,0,0);
+	private CenterProfileGenerator profileGen;
 
 	public DualPIDMotionProfile leftMotionProfile;
 	public DualPIDMotionProfile rightMotionProfile;
@@ -71,6 +76,9 @@ public class DriveBase2018 extends DriveBase {
 
 	public DriveBase2018() {
 		super();
+        PIGEON_TALON = Climber.right;
+		imu = new PigeonIMU(PIGEON_TALON.talon);
+
 		left = new FeedbackLinkedCAN(FeedbackDevice.CTRE_MagEncoder_Absolute, Motors.LEFT1.id,
 				Motors.LEFT0.getVictor(), Motors.LEFT2.getVictor());
 		left.feedbackTalon.talon.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_20Ms, 0);
@@ -97,8 +105,8 @@ public class DriveBase2018 extends DriveBase {
 
 		//If the robot turns the wrong way, change the signs of both angEffects. If it goes forward or backwards instead
         // of turning, change the sign on one of the angEffects.
-		leftMotionProfile = new DualPIDMotionProfile(linMotionProfilePID, angMotionProfilePID, -1, velGain, accelGain, profileGen);
-		rightMotionProfile = new DualPIDMotionProfile(linMotionProfilePID, angMotionProfilePID, 1, velGain, accelGain, profileGen);
+		leftMotionProfile = new DualPIDMotionProfile(linMotionProfilePID, angMotionProfilePID, 1, velGain, accelGain, profileGen);
+		rightMotionProfile = new DualPIDMotionProfile(linMotionProfilePID, angMotionProfilePID, -1, velGain, accelGain, profileGen);
 
         resetAngle();
 	}
@@ -118,11 +126,11 @@ public class DriveBase2018 extends DriveBase {
      */
     public double getAngle(){
         //Just find based on encoder stuff. THIS IS BAD! CHANGE THIS!
-        return (right.getPosition() - left.getPosition()) / wheelDistance * 2 + angleOffset;
+        return Math.toRadians(imu.getFusedHeading()) - angleOffset;
     }
 
     private double getRawAngle(){
-        return (right.getPosition() - left.getPosition()) / wheelDistance * 2;
+        return Math.toRadians(imu.getFusedHeading());
     }
 
     public void resetAngle(){
@@ -138,6 +146,17 @@ public class DriveBase2018 extends DriveBase {
 		SmartDashboard.putNumber("right position", right.getPosition());
 		leftMotionProfile.writeErrorToDashboard("left MP error");
 		rightMotionProfile.writeErrorToDashboard("right MP error");
+		if(SmartDashboard.getBoolean("Calibrate pigeon IMU", false)){
+			SmartDashboard.putBoolean("Calibrate pigeon IMU", false);
+			imu.enterCalibrationMode(PigeonIMU.CalibrationMode.Temperature, 100);
+		}
+		SmartDashboard.putNumber("Heading", getAngle());
+
+        if(isFeedbackActive){
+            double[] pidOuts = leftMotionProfile.run(0,dT);
+            left.setPower(pidOuts[0] - pidOuts[1]);
+            right.setPower(pidOuts[0] + pidOuts[1]);
+        }
 	}
 	
 	public void enableCurrentLimiting() {
@@ -232,15 +251,18 @@ public class DriveBase2018 extends DriveBase {
 		rightMotionProfile.generateProfileFromPath(p, isBackwards);
 
 		// set offsets
-		leftMotionProfile.setOffset(left.getPosition());
-		rightMotionProfile.setOffset(right.getPosition());
+        double offset = (left.getPosition() + right.getPosition()) / 2.0;
+		leftMotionProfile.setOffset(offset);
+		rightMotionProfile.setOffset(offset);
 
 		// enable them
-		left.setFeedbackController(leftMotionProfile);
-		right.setFeedbackController(rightMotionProfile);
-		left.setFeedbackActive(true);
-		right.setFeedbackActive(true);
+		//left.setFeedbackController(leftMotionProfile);
+		//right.setFeedbackController(rightMotionProfile);
+		//left.setFeedbackActive(true);
+		//right.setFeedbackActive(true);
+        isFeedbackActive = true;
 	}
+
 
 	/**
 	 * drive from one waypoint to another

@@ -23,7 +23,7 @@ public class CenterMPPoint extends MPPoint {
      *            0.5 is halfway between, etc.)
      * @return the interpolated point
      */
-    public MPPoint lerp(CenterMPPoint p2, double alpha) {
+    public CenterMPPoint lerp(CenterMPPoint p2, double alpha) {
         double newVel = Utilities.lerp(this.velocity, p2.velocity, alpha);
         double newPos = Utilities.lerp(this.position, p2.position, alpha);
         double newTime = Utilities.lerp(this.time, p2.time, alpha);

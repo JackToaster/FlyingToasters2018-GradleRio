@@ -6,16 +6,16 @@ import org.theflyingtoasters.controllers.PIDcontroller;
 import org.theflyingtoasters.path_generation.Path;
 import org.theflyingtoasters.utilities.Logging;
 
-public class DualPIDMotionProfile implements AbstractFeedbackController {
+public class DualPIDMotionProfile /*implements AbstractFeedbackController*/ {
     private double distance, angle;
     private double angEffect;
 
 
     private double error = 0;
-    private Profile profile;
+    private CenterProfile profile;
     private double totalTime = 0;
     private MPPoint lastTarget;
-    private WheelProfileGenerator wpg;
+    private CenterProfileGenerator wpg;
     // the amount to offset the encoder value by
     private double offset;
 
@@ -39,7 +39,7 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
      *            the wheelProfileGenerator to use to transform the path
      */
     public DualPIDMotionProfile(PIDcontroller pidController, PIDcontroller angPid, double angEffect, double velGain, double accelGain,
-                         WheelProfileGenerator wheelProfileGen) {
+                         CenterProfileGenerator wheelProfileGen) {
         distPid = pidController;
         this.angPid = angPid;
         this.angEffect = angEffect;
@@ -64,7 +64,7 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
      *            the profile to follow
      */
     public DualPIDMotionProfile(PIDcontroller distPid, PIDcontroller angPid, double angEffect, double velGain, double accelGain,
-                                WheelProfileGenerator wheelProfileGen, Profile p) {
+                                CenterProfileGenerator wheelProfileGen, CenterProfile p) {
         this.distPid = distPid;
         this.angPid = angPid;
         this.angEffect = angEffect;
@@ -91,7 +91,7 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
      * @param points
      *            the points to put in the profile
      */
-    public void setPoints(MPPoint... points) {
+    public void setPoints(CenterMPPoint... points) {
         if (points.length < 2) {
             Logging.w("Useless motion profile - less than 2 points");
         } else {
@@ -114,7 +114,7 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
         lastTarget = profile.start();
     }
 
-    @Override
+    //@Override
     public void setGains(double... gains) {
         if (gains.length != 5) {// check to see if there are the right number
             // of values
@@ -127,17 +127,17 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
         }
     }
 
-    @Override
+    //@Override
     public void readFromPrefs(String name) {
         // TODO make read from prefs
     }
 
     // setting/getting the setpoint of a motion profile makes no sense.
-    @Override
+    //@Override
     public void setSetpoint(double setpoint) {
     }
 
-    @Override
+    //@Override
     public double getSetpoint() {
         return 0;
     }
@@ -150,7 +150,7 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
     /**
      * run the closed loop control
      */
-    public double run(double current, double deltaTime) {
+    public double[] run(double current, double deltaTime) {
         double offsetCurrent = distance - offset;
         // update current time
         totalTime += deltaTime;
@@ -163,7 +163,7 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
             target = (CenterMPPoint) profile.end();
             accel = 0;
         } else {
-            target = (CenterMPPoint) profile.getInterpolatedPoint(totalTime);
+            target = /**(CenterMPPoint)*/ profile.getInterpolatedPoint(totalTime);
             accel = (target.velocity - lastTarget.velocity) / deltaTime;
         }
 
@@ -173,12 +173,22 @@ public class DualPIDMotionProfile implements AbstractFeedbackController {
         // set up the PIDs
         distPid.setSetpoint(target.position);
         angPid.setSetpoint(target.orientation);
-        double pidOut = distPid.run(offsetCurrent, deltaTime) + angEffect * angPid.run(angle, deltaTime);
+
+        Logging.h("Angle setpoint:" + target.orientation);
+        Logging.h("Distance setpoint:" + target.position);
+        double angOut = angEffect * angPid.run(angle, deltaTime);
+        double linOut = distPid.run(offsetCurrent, deltaTime);
+        Logging.h("Angular PID:" + angOut);
+        Logging.h("Linear PID:" + linOut);
+
+        double pidOut = linOut + angOut;
+
+        Logging.h("PID output:" + pidOut);
 
         double velOut = kV * target.velocity;
         double accelOut = kA * accel;
 
-        return pidOut + velOut + accelOut;
+        return new double[]{linOut + velOut + accelOut, angOut};
     }
 
     /**

@@ -24,7 +24,7 @@ public class Climber {
 	private Servo forkServo;
 	
 	private Talon left;
-	private Talon right;
+	public static Talon right = new Talon(RIGHT);
 
 	public Climber() {
 		riggingServo = new Servo(RIGGING_PORT);
@@ -33,7 +33,6 @@ public class Climber {
 		closeServos();
 		
 		left = new Talon(LEFT);
-		right = new Talon(RIGHT);
 //		right.followMaster(left);
 		
 		left.setInverted(false);

@@ -62,7 +62,7 @@ public abstract class DriveBase {
 				c.runFeedback(dT);
 			}
 		}
-	};
+	}
 
 	/**
 	 * activate or deactivate the feedback control on ALL motor controllers in the

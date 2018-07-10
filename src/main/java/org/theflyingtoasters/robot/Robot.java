@@ -162,6 +162,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
         SmartDashboard.putData("Auto choices", chooser);
         SmartDashboard.putBoolean("Manual enabled", false);
         SmartDashboard.putBoolean("Allow Auton Opposite Side", true);
+        SmartDashboard.putBoolean("Calibrate pigeon IMU", false);
         // initialize drivebase
         driveBase = new DriveBase2018();
 
