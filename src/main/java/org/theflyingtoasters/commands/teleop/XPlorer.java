@@ -134,7 +134,7 @@ public class XPlorer
 	public void setRumble(double rumble)
 	{
 		rumble = Math.abs(rumble);
-		Logging.h("Rumble: " + rumble);
+		Logging.l("Rumble: " + rumble);
 		rawJoystick.setRumble(RumbleType.kLeftRumble, rumble);
 		rawJoystick.setRumble(RumbleType.kRightRumble, rumble);
 	}

@@ -46,7 +46,7 @@ public class SwitchAuton extends OpMode {
 	}
 
 	public void init() {
-		Logging.h("Init run!");
+		//Logging.h("Init run!");
 
 		super.init();
 		addCommand(motionProfileCmd);

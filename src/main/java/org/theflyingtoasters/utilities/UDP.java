@@ -88,7 +88,7 @@ public class UDP {
             String response = new String(buf, 0, packet.getLength()); //Converts the byte array to a string
             return response;
         } catch (Exception e) {
-            Logging.h("Error happened reading UDP data");
+            Logging.m("An Error occurred reading UDP data");
             return null;
         }
     }

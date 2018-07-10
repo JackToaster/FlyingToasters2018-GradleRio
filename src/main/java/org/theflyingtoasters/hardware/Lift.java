@@ -208,7 +208,7 @@ public class Lift {
 	 *            The position to go to.
 	 */
 	public void trackToPos(Positions position) {
-		Logging.h("Tracking to: " + position.toString());
+		Logging.m("Tracking to: " + position.toString());
 		// The lift should only be able to go to l/h scale from starting, otherwise go
 		// to starting flip position.
 		if (currentPos == Positions.STARTING && position.liftPos > Positions.STARTING.liftPos) {
@@ -362,7 +362,7 @@ public class Lift {
 	 * Read PIDF values from the dashboard
 	 */
 	public void readTuningValuesFromDashboard() {
-		Logging.h("Reading pid tuning values");
+		Logging.m("Reading pid tuning values");
 		liftParams.kP = SmartDashboard.getNumber("lift_kp", liftParams.kP);
 		liftParams.kI = SmartDashboard.getNumber("lift_ki", liftParams.kI);
 		liftParams.kD = SmartDashboard.getNumber("lift_kd", liftParams.kD);

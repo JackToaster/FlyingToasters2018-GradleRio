@@ -70,7 +70,7 @@ public class OPScaleAuton extends OpMode {
 	}
 
 	public void init() {
-		Logging.h("Init run!");
+		//Logging.h("Init run!");
 		
 		super.init();
 		switch(mode) {

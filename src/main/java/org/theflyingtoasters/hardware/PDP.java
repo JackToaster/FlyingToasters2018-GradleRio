@@ -60,11 +60,11 @@ public class PDP extends PowerDistributionPanel
 				logStream.println(outputString);
 				logStream.flush();
 			} catch (IOException e) { 
-				Logging.h("Could not create new current log \"" + logName + "\"");
+				Logging.m("Could not create new current log \"" + logName + "\"");
 			}
 		} else { 
 			SmartDashboard.putString("logName", "NONE!");
-			Logging.h("\"" + DIR + "\" is not a directory...");
+			Logging.m("\"" + DIR + "\" is not a directory...");
 		}
 	}
 	

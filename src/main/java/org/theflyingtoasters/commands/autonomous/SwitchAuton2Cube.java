@@ -74,7 +74,7 @@ public class SwitchAuton2Cube extends OpMode {
 	}
 
 	public void init() {
-		Logging.h("Init run!");
+		//Logging.h("Init run!");
 
 		super.init();
 		addCommand(firstCube);

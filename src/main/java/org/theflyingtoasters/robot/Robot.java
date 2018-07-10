@@ -362,7 +362,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
             teleop.periodic(deltaTime);
         }
 
-        Logging.h(UDP.getScaleAngle(0));
+        Logging.l(UDP.getScaleAngle(0));
     }
 
     /**

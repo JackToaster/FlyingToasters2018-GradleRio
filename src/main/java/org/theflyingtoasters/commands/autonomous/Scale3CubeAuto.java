@@ -192,8 +192,8 @@ public class Scale3CubeAuto extends OpMode {
 	}
 
 	public void commandFinished(Command cmd) {
-		Logging.h("Command ended: " + cmd.getName());
-		Logging.h("Running commands: " + commands.toString());
+		//Logging.h("Command ended: " + cmd.getName());
+		//Logging.h("Running commands: " + commands.toString());
 		// Add the intake command to output the cube.
 		if (cmd == mpCommand) {
 			// Check if the robot can cross over. If not, auton stops here.

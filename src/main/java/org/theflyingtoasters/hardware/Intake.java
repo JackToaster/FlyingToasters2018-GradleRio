@@ -210,7 +210,7 @@ public class Intake {
 	}
 
 	public void setState(State newState) {
-		Logging.h("Switching Intake from " + currentState.toString() + " to " + newState.toString());
+		Logging.l("Switching Intake from " + currentState.toString() + " to " + newState.toString());
 		currentState = newState;
 		time = 0;
 	}
@@ -238,7 +238,7 @@ public class Intake {
 	}
 	
 	public void readTuningValuesFromDashboard() {
-		Logging.h("Reading pid tuning values");
+		Logging.m("Reading pid tuning values");
 		intakeParams.kP = SmartDashboard.getNumber("intake_kp", intakeParams.kP);
 		intakeParams.kI = SmartDashboard.getNumber("intake_ki", intakeParams.kI);
 		intakeParams.kD = SmartDashboard.getNumber("intake_kd", intakeParams.kD);

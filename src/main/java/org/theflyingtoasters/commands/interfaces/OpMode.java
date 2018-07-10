@@ -82,7 +82,7 @@ public abstract class OpMode extends Command implements CommandCallback {
 	 *            the command to add
 	 */
 	protected void addCommand(Command cmd) {
-		Logging.h("Added command: " + cmd);
+		Logging.l("Added command: " + cmd);
 		commands.add(cmd);
 		cmd.init();
 	}
@@ -92,7 +92,7 @@ public abstract class OpMode extends Command implements CommandCallback {
 	 * commands.
 	 */
 	public void commandFinished(Command cmd) {
-		Logging.h("Removed command: " + cmd);
+		Logging.l("Removed command: " + cmd);
 		commands.remove(cmd);
 	}
 }

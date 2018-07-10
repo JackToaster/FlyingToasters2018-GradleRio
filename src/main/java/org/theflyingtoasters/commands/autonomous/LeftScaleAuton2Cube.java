@@ -119,8 +119,8 @@ public class LeftScaleAuton2Cube extends OpMode {
 	}
 
 	public void commandFinished(Command cmd) {
-		Logging.h("Command ended: " + cmd.getName());
-		Logging.h("Running commands: " + commands.toString());
+		//Logging.h("Command ended: " + cmd.getName());
+		//Logging.h("Running commands: " + commands.toString());
 		// Add the intake command to output the cube.
 		if (cmd == mpCommand) {
 			if (!left) {
