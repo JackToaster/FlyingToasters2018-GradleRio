@@ -42,7 +42,7 @@ public class Intake {
 	private final double maxRecoveryTime = 1;
 
 	private final double defaultInSpeed = 1.0;
-	private double defaultOutSpeed = 0.5;
+	private double defaultOutSpeed = 1.0;
 	private double manualOutSpeed = defaultOutSpeed;
 	
 	private final int MAX_INTAKE_VELOCITY = 13500;

@@ -107,14 +107,14 @@ public class Coords
 	public static double fixRadians(double radians)
 	{
 		while(radians >= 2 * Math.PI) radians -= 2 * Math.PI;
-		while(radians < 0) radians += 360;
+		while(radians < 0) radians += 2 * Math.PI;
 		return radians;
 	}
 
 	public static double calcAngleErrorRad(double targetAngle, double currentAngle)
 	{
 		double counterClockwiseDistance, clockwiseDistance;
-
+		//Logging.h("Current: " + currentAngle + ", target: " + targetAngle);
 		if(targetAngle == currentAngle) return 0;
 		else
 		{

@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot implements CommandCallback {
      * @author jack
      */
     enum Auton {
-        AUTO_LINE("Auto Line auton"),
+        AUTO_LINE("(REVERSE) Auto Line auton"),
         AUTO_SWITCH("Switch auton"),
         TURN_TEST("Test turn 90 degrees"),
         //		AUTO_SWITCH_2C("Two Cube Switch auton"),
@@ -163,13 +163,13 @@ public class Robot extends IterativeRobot implements CommandCallback {
         SmartDashboard.putBoolean("Manual enabled", false);
         SmartDashboard.putBoolean("Allow Auton Opposite Side", true);
         SmartDashboard.putBoolean("Calibrate pigeon IMU", false);
-        // initialize drivebase
-        driveBase = new DriveBase2018();
+
 
         lift = new Lift();
         intake = new Intake(lift);
         climber = new Climber();
-
+        // initialize drivebase
+        driveBase = new DriveBase2018();
         ds = DriverStation.getInstance();
 
         // initialize timer
@@ -301,6 +301,9 @@ public class Robot extends IterativeRobot implements CommandCallback {
     @Override
     public void autonomousInit() {
         Logging.h("Auton enabled.");
+
+        driveBase.resetAngle();
+
         String gameData = DriverStation.getInstance().getGameSpecificMessage();
 
         //TODO: MAKE THIS LESS TERRIBLE OH MY GOD

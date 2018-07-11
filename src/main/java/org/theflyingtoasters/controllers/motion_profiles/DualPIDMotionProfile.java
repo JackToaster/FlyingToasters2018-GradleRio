@@ -175,20 +175,19 @@ public class DualPIDMotionProfile /*implements AbstractFeedbackController*/ {
         distPid.setSetpoint(target.position);
         angPid.setSetpoint(target.orientation);
 
-        Logging.l("Angle setpoint:" + target.orientation);
-        Logging.l("Distance setpoint:" + target.position);
+        //Logging.h("Angle setpoint:" + target.orientation);
+        //Logging.h("Distance setpoint:" + target.position);
         double angOut = angEffect * angPid.run(angle, deltaTime);
         double linOut = distPid.run(offsetCurrent, deltaTime);
-        Logging.l("Angular PID:" + angOut);
-        Logging.l("Linear PID:" + linOut);
+        //Logging.h("Angular PID:" + angOut);
+        //Logging.h("Linear PID:" + linOut);
 
-        double pidOut = linOut + angOut;
+        //double pidOut = linOut + angOut;
 
-        Logging.l("PID output:" + pidOut);
+        //Logging.h("PID output:" + pidOut);
 
         double velOut = kV * target.velocity;
         double accelOut = kA * accel;
-
         return new double[]{linOut + velOut + accelOut, angOut};
     }
 
@@ -225,6 +224,7 @@ public class DualPIDMotionProfile /*implements AbstractFeedbackController*/ {
      */
     public void writeErrorToDashboard(String key) {
         SmartDashboard.putNumber(key, error);
+
     }
 }
 

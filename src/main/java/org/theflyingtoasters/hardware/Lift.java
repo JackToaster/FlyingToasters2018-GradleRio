@@ -51,11 +51,11 @@ public class Lift {
 	 */
 	private class FlipTalonParams {
 		double kF = 0;
-		double kP = 40;
+		double kP = 60;
 		double kI = 0;
-		double kD = 4;
-		int vel = 25;
-		int accel = 30;
+		double kD = 8;
+		int vel = 1;
+		int accel = 20;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Lift {
 		//new
 		GROUND(-98, 667),
 		GROUND_TILT(-112, 657),
-		SWITCH(-365, 667),
+		SWITCH(-160, 667),
 		H_SWITCH(-475, 667),
 		L_SCALE(-695, 621),
 		LL_SCALE(-590, 621),

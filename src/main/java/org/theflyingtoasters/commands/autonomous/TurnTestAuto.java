@@ -17,10 +17,10 @@ import org.theflyingtoasters.utilities.Logging;
  *
  */
 public class TurnTestAuto extends OpMode {
-	private final static double dist_m = 2.5;
+	private final static double dist_m = 1.75;
 
 	private Waypoint start = new Waypoint(new Point(0, 0), 0);
-	private Waypoint end = new Waypoint(new Point(dist_m, 0), Math.PI / 2.0);
+	private Waypoint end = new Waypoint(new Point(dist_m, dist_m), Math.PI / 2.0);
 	MotionProfileCommand motionProfile;
 	DelayedCommand delay;
 	LiftCommand flip;
@@ -31,7 +31,7 @@ public class TurnTestAuto extends OpMode {
 	 */
 	public TurnTestAuto(Robot bot) {
 		super(bot, "Motion Profile Auton");
-		motionProfile = new MotionProfileCommand(this, bot, "cross line", false, MotionProfileCommand.Speed.SLOW_LOW_ACCEL, start, end);
+		motionProfile = new MotionProfileCommand(this, bot, "cross line", true, MotionProfileCommand.Speed.MED, start, end);
 		delay = new DelayedCommand(this, 5);
 		flip = new LiftCommand(delay, bot, Lift.Positions.STARTING_FLIP);
 		delay.setCommand(flip);

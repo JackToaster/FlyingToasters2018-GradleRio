@@ -41,8 +41,8 @@ public class DriveBase2018 extends DriveBase {
 	//linMotionProfilePID should be close, but angMotionProfilePID (for turning)
 	//will not be.
 	//Tune driving straight first, then tune in turning.
-	private PIDcontroller linMotionProfilePID = new PIDcontroller(3.25, 5.5, 0.11);
-	private AngularPID angMotionProfilePID = new AngularPID(1,0,0);
+	private PIDcontroller linMotionProfilePID = new PIDcontroller(4.4, 5.5, 0.19);
+	private AngularPID angMotionProfilePID = new AngularPID(2.75,2,0.10);
 	private CenterProfileGenerator profileGen;
 
 	public DualPIDMotionProfile motionProfile;

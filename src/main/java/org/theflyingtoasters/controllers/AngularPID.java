@@ -1,8 +1,11 @@
 package org.theflyingtoasters.controllers;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.theflyingtoasters.utilities.Coords;
+import org.theflyingtoasters.utilities.Logging;
 import org.theflyingtoasters.utilities.Utilities;
+import sun.rmi.runtime.Log;
 
 
 /**
@@ -18,7 +21,10 @@ public class AngularPID extends PIDcontroller {
     @Override
     public double run(double current, double deltaTime) {
         double error = Coords.calcAngleErrorRad(setpoint,current);
-        integral += error * deltaTime;
+        //Logging.h("Angular error: " + error);
+        //Logging.h("Current angle: " + current + ", target angle: " + setpoint);
+        SmartDashboard.putNumber("Angular MP Error", error);
+        integral -= error * deltaTime;
         if (limitIntegral) {
             if (Math.abs(integral) > maxIntegral / kI) {
                 if (integral > 0) {
@@ -38,7 +44,7 @@ public class AngularPID extends PIDcontroller {
 
         // calculate the integral + derivative parts
         double integralValue = -integral * kI;
-        double derivativeValue = -deltaError * kD;
+        double derivativeValue = deltaError * kD;
 
         // set the last error for next loop
         lastReading = current;

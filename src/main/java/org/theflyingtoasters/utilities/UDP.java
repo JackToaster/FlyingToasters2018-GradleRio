@@ -35,6 +35,10 @@ public class UDP {
         }
     }
 
+    public void close(){
+        socket.close();
+    }
+
     /**
      * Get the most recent message.
      *
@@ -95,14 +99,20 @@ public class UDP {
 
     public static void startScaleListener() {
         //String driverStationIP = SmartDashboard.getString("DS IP", "10.36.41.43");
+        if(scaleListener != null)
+            scaleListener.close();
         scaleListener = new UDP("", SCALE_PORT);
         if(scaleListenerThread != null)
             scaleListenerThread.interrupt();
 
         scaleListenerThread = new Thread(() -> {
             while(true) {
-                synchronized (UDP.class) {
-                    scaleAngle = readScaleAngleBlocking();
+                try {
+                    synchronized (UDP.class) {
+                        scaleAngle = readScaleAngleBlocking();
+                    }
+                } catch(Exception e){
+                    break;
                 }
                 try {
                     Thread.sleep(100);

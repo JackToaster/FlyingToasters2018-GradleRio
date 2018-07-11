@@ -2,6 +2,7 @@ package org.theflyingtoasters.controllers.motion_profiles;
 
 import org.theflyingtoasters.path_generation.Path;
 import org.theflyingtoasters.path_generation.Waypoint;
+import org.theflyingtoasters.utilities.Logging;
 
 /**
  * Converts a path to forward or backwards profile
@@ -23,6 +24,7 @@ public class CenterProfileGenerator/* extends WheelProfileGenerator */{
             } else {
                 currentMPPoint = new CenterMPPoint(wp.velocity, wp.distance, wp.time, wp.rotation + Math.PI);
             }
+            Logging.h("Angle: " + wp.rotation + ", i=" + i);
             //Set the point in the profile!
             outProfile.setPoint(i, currentMPPoint);
         }

@@ -4,6 +4,7 @@ import org.theflyingtoasters.commands.DelayedCommand;
 import org.theflyingtoasters.commands.LiftCommand;
 import org.theflyingtoasters.commands.MotionProfileCommand;
 import org.theflyingtoasters.commands.interfaces.OpMode;
+import org.theflyingtoasters.hardware.IMU;
 import org.theflyingtoasters.hardware.Lift;
 import org.theflyingtoasters.path_generation.Point;
 import org.theflyingtoasters.path_generation.Waypoint;
@@ -31,7 +32,7 @@ public class AutoLineAuton extends OpMode {
 	 */
 	public AutoLineAuton(Robot bot) {
 		super(bot, "Motion Profile Auton");
-		motionProfile = new MotionProfileCommand(this, bot, "cross line", false, MotionProfileCommand.Speed.SLOW_LOW_ACCEL, start, end);
+		motionProfile = new MotionProfileCommand(this, bot, "cross line", true, MotionProfileCommand.Speed.SLOW_LOW_ACCEL, start, end);
 		delay = new DelayedCommand(this, 5);
 		flip = new LiftCommand(delay, bot, Lift.Positions.STARTING_FLIP);
 		delay.setCommand(flip);
