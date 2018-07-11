@@ -325,7 +325,8 @@ public class Lift {
 			resettingDown = true;
 		}
 	}
-	
+
+
 	/**
 	 * Stops moving the lift downards to reset error.
 	 */
@@ -341,7 +342,7 @@ public class Lift {
 		return Math.abs(liftMotor.feedbackTalon.getRawPosition() - currentPos.liftPos)
 				+ Math.abs(flipMotor.getRawPosition() - currentPos.flipPos);
 	}
-	
+
 	/**
 	 * Writes the current position, velocity, and closed loop error to the
 	 * dashboard.position
@@ -349,20 +350,20 @@ public class Lift {
 	public void logToDashboard() {
 		SmartDashboard.putString("Lift setpoint name", currentPos.name());
 		SmartDashboard.putNumber("lift encoder pos", liftMotor.feedbackTalon.getRawPosition());
-		//SmartDashboard.putNumber("lift closed loop error", liftMotor.feedbackTalon.getRawCLError());
+		SmartDashboard.putNumber("lift closed loop error", liftMotor.feedbackTalon.getRawCLError());
 		SmartDashboard.putNumber("flip encoder pos", flipMotor.getRawPosition());
-		//SmartDashboard.putNumber("flip closed loop error", flipMotor.getRawCLError());
-		//SmartDashboard.putNumber("flip talon output voltage", flipMotor.talon.getMotorOutputVoltage());
-		//SmartDashboard.putNumber("Lift motor output voltage", liftMotor.feedbackTalon.talon.getMotorOutputVoltage());
-		//SmartDashboard.putBoolean("Lift lim switch", limSwitchVal);
-		//SmartDashboard.putBoolean("Resetting Down", resettingDown);
+		SmartDashboard.putNumber("flip closed loop error", flipMotor.getRawCLError());
+		SmartDashboard.putNumber("flip talon output voltage", flipMotor.talon.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Lift motor output voltage", liftMotor.feedbackTalon.talon.getMotorOutputVoltage());
+		SmartDashboard.putBoolean("Lift lim switch", limSwitchVal);
+		SmartDashboard.putBoolean("Resetting Down", resettingDown);
 	}
 
 	/**
 	 * Read PIDF values from the dashboard
 	 */
 	public void readTuningValuesFromDashboard() {
-		Logging.m("Reading pid tuning values");
+		Logging.h("Reading pid tuning values");
 		liftParams.kP = SmartDashboard.getNumber("lift_kp", liftParams.kP);
 		liftParams.kI = SmartDashboard.getNumber("lift_ki", liftParams.kI);
 		liftParams.kD = SmartDashboard.getNumber("lift_kd", liftParams.kD);
