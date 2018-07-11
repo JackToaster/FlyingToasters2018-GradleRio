@@ -51,11 +51,11 @@ public class Lift {
 	 */
 	private class FlipTalonParams {
 		double kF = 0;
-		double kP = 60;
+		double kP = 40;
 		double kI = 0;
-		double kD = 8;
-		int vel = 1;
-		int accel = 20;
+		double kD = 4;
+		int vel = 25;
+		int accel = 30;
 	}
 
 	/**

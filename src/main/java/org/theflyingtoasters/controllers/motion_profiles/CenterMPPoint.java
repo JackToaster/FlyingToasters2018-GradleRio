@@ -27,7 +27,7 @@ public class CenterMPPoint extends MPPoint {
         double newVel = Utilities.lerp(this.velocity, p2.velocity, alpha);
         double newPos = Utilities.lerp(this.position, p2.position, alpha);
         double newTime = Utilities.lerp(this.time, p2.time, alpha);
-        double newOrientation = Utilities.lerp(this.orientation, p2.orientation, alpha);
+        double newOrientation = Utilities.cLerpRadians(this.orientation, p2.orientation, alpha);
         return new CenterMPPoint(newVel, newPos, newTime, newOrientation);
     }
 }

@@ -256,7 +256,20 @@ public abstract class Utilities {
 	public static double lerp(double p1, double p2, double alpha){
 		return alpha * (p2 - p1) + p1;
 	}
-	
+
+
+    /**
+     * Lerp, but circular for angles. Avoids crazy bugs with center motion profiles.
+     * @param p1 angle 1
+     * @param p2 angle 2
+     * @param alpha percentage to interpolate between
+     * @return output angle
+     */
+	public static double cLerpRadians(double p1, double p2, double alpha){
+		return alpha * Coords.calcAngleErrorRad(p2, p1) + p1;
+	}
+
+
 	public static double expInput(double input, double power) {
 		if (input > 0) {
 			return Math.pow(input, power);

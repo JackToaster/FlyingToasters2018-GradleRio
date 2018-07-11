@@ -72,9 +72,9 @@ public class Teleop extends OpMode {
 		if (SmartDashboard.getBoolean("Manual enabled", true)) {
 			robot.lift.disableMotionMagic();
 		}
-
-		op.checkControllerType();
 		*/
+		op.checkControllerType();
+
 		
 		
 		brownout = false;

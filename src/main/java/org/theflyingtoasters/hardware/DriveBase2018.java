@@ -113,7 +113,6 @@ public class DriveBase2018 extends DriveBase {
 		return v;
 	}
 
-	//TODO Implement this with gyro instead of encoders
 
     /**
      * @return the angle of the robot's drivebase.

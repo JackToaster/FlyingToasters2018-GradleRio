@@ -3,10 +3,6 @@ package org.theflyingtoasters.controllers;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.theflyingtoasters.utilities.Coords;
-import org.theflyingtoasters.utilities.Logging;
-import org.theflyingtoasters.utilities.Utilities;
-import sun.rmi.runtime.Log;
-
 
 /**
  * A PID Controller that goes the correct direction around a circle.
