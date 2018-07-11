@@ -147,7 +147,7 @@ public class Teleop extends OpMode {
 		Logging.l("Right enc.:" + robot.driveBase.right.getPosition());
 
 		// Set the power of the intake based on the user inputs.
-		robot.intake.setOutputSpeed(op.getAxis(Operator.Axis.OUTPUT_SPEED) * 0.4);
+		robot.intake.setOutputSpeed(op.getAxis(Operator.Axis.OUTPUT_SPEED) * 1.0);
 		
 		if(op.isPressed(Operator.Button.OUTTAKE) && op.getAxis(Operator.Axis.OUTPUT_SPEED) < .1) {
 			robot.intake.setState(Intake.State.FLUTTER_OUT);
@@ -197,9 +197,9 @@ public class Teleop extends OpMode {
 		
 		//When the whammy bar is pressed, don't tilt the intake up when we get a cube.
 		if(op.isPressed(Operator.Button.AUTO_FLIP)) { 
-			robot.intake.enableAutolift(false);
-		} else if(op.isReleased(Operator.Button.AUTO_FLIP)) {
 			robot.intake.enableAutolift(true);
+		} else if(op.isReleased(Operator.Button.AUTO_FLIP)) {
+			robot.intake.enableAutolift(false);
 		}
 		
 		//If we get the cube, let the driver know by activating the heavy rumble

@@ -86,7 +86,7 @@ public class Lift {
 		//new
 		GROUND(-98, 667),
 		GROUND_TILT(-112, 657),
-		SWITCH(-365, 667),
+		SWITCH(-160, 667),
 		H_SWITCH(-475, 667),
 		L_SCALE(-695, 621),
 		LL_SCALE(-610, 621),
