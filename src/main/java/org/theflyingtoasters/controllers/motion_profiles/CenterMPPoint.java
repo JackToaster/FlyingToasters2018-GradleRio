@@ -30,4 +30,8 @@ public class CenterMPPoint extends MPPoint {
         double newOrientation = Utilities.cLerpRadians(this.orientation, p2.orientation, alpha);
         return new CenterMPPoint(newVel, newPos, newTime, newOrientation);
     }
+
+    public String toString() {
+        return super.toString() + ", angle: " + orientation;
+    }
 }
