@@ -23,11 +23,11 @@ public class Scale3CubeAutoFast extends OpMode {
 	private Waypoint[] leftPath = { new Waypoint(new Point(0, 0), 0), new Waypoint(new Point(5.5, 0), 0),
 			new Waypoint(new Point(7.2, -0.6), -Math.PI / 4.0) };
 	private Waypoint[] leftGetCube2 = { new Waypoint(new Point(7.2, -0.5), 3 * Math.PI / 4.0),
-			new Waypoint(new Point(5.4, -0.65), -3 * Math.PI / 4.0) };
+			new Waypoint(new Point(5.4, -0.64), -2.3) };
 	private Waypoint[] left2ndCube = { new Waypoint(new Point(5.2, -0.35), Math.PI / 4.0),
 			new Waypoint(new Point(7.2, -0.4), -Math.PI / 4.0) };
 	private Waypoint[] leftGetCube3 = { new Waypoint(new Point(7.2, -0.5), 3 * Math.PI / 4.0),
-			new Waypoint(new Point(5.4, -1.5), -3 * Math.PI / 4.0) };
+			new Waypoint(new Point(5.4, -1.5), -2.3) };
 	private Waypoint[] left3rdCube = { new Waypoint(new Point(5.2, -1), Math.PI / 4.0),
 			new Waypoint(new Point(7.2, -0.4), -Math.PI / 4.0) };
 
@@ -43,7 +43,7 @@ public class Scale3CubeAutoFast extends OpMode {
 	// new Waypoint(new Point(5.65, -4.75), -Math.PI / 2.0), new Waypoint(new
 	// Point(6.9, -5.5), Math.PI / 4) };
 	private Waypoint[] rightGetCube = { new Waypoint(new Point(6.9, -5.5), -3 * Math.PI / 4),
-			new Waypoint(new Point(5.5, -5.35), 3 * Math.PI / 4) };
+			new Waypoint(new Point(5.5, -5.35), 2.3) };
 	private Waypoint[] right2ndCube = { new Waypoint(new Point(5.35, -6), -Math.PI / 4),
 			new Waypoint(new Point(7.4, -5.9), Math.PI / 4) };
 

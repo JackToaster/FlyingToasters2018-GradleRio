@@ -64,7 +64,7 @@ public class Lift {
 	static final double FLIP_MIN_POS = -418;
 
 	private static final double DOWN_SLOW_SPEED = -.15;
-
+	
 	/**
 	 * The different positions to go to, in raw potentiometer values.
 	 * 
@@ -84,17 +84,17 @@ public class Lift {
 		STARTING(-418, 389),
 		STARTING_FLIP(-418, 537);*/
 		//new
-		GROUND(-98, 667),
-		GROUND_TILT(-112, 657),
-		SWITCH(-160, 667),
-		H_SWITCH(-475, 667),
-		L_SCALE(-695, 621),
-		LL_SCALE(-590, 621),
-		H_SCALE(-737, 627),
-		CLIMB(-777, 618),
-		CLIMB_ENGAGED(-475, 618),
-		STARTING(-418, 618),
-		STARTING_FLIP(-418, 667);
+		GROUND(-98, 350),
+		GROUND_TILT(-112, 370),
+		SWITCH(-160, 350),
+		H_SWITCH(-475, 350),
+		L_SCALE(-695, 401),
+		LL_SCALE(-590, 401),
+		H_SCALE(-737, 389),
+		CLIMB(-777, 401),
+		CLIMB_ENGAGED(-475, 401),
+		STARTING(-418, 401),
+		STARTING_FLIP(-418, 401);
 
         double liftPos;
 		double flipPos;
@@ -351,7 +351,8 @@ public class Lift {
 		SmartDashboard.putString("Lift setpoint name", currentPos.name());
 		SmartDashboard.putNumber("lift encoder pos", liftMotor.feedbackTalon.getRawPosition());
 		SmartDashboard.putNumber("lift closed loop error", liftMotor.feedbackTalon.getRawCLError());
-		SmartDashboard.putNumber("flip encoder pos", flipMotor.getRawPosition());
+		SmartDashboard.putNumber("flip raw encoder pos", flipMotor.getRawPosition());
+		SmartDashboard.putNumber("flip encoder pos", flipMotor.getPosition());
 		SmartDashboard.putNumber("flip closed loop error", flipMotor.getRawCLError());
 		SmartDashboard.putNumber("flip talon output voltage", flipMotor.talon.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Lift motor output voltage", liftMotor.feedbackTalon.talon.getMotorOutputVoltage());
