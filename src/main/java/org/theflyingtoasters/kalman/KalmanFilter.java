@@ -2,8 +2,6 @@ package org.theflyingtoasters.kalman;
 
 
 import Jama.Matrix;
-import com.sun.org.apache.xalan.internal.lib.ExsltDatetime;
-import org.theflyingtoasters.hardware.Intake;
 
 /**
  * Implements the original Kalman Filter using Jama's Matrix API
