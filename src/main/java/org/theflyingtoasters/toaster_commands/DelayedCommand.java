@@ -5,6 +5,7 @@ public class DelayedCommand extends Command implements CommandRunner{
 	private double timer;
 	private Command command;
 	private boolean commandRunning = false;
+	private CommandRunner oldCallback;
 	
 	public DelayedCommand (CommandScheduler callback, double delayTime) {
 		super(callback);
@@ -13,7 +14,13 @@ public class DelayedCommand extends Command implements CommandRunner{
 	
 	public void setCommand(Command command) {
 		this.command = command;
+		oldCallback = command.getCallback();
 	}
+
+	public Command getCommand(){
+	    return command;
+    }
+
 	
 	public void init() {
 		timer = delay;
@@ -31,13 +38,14 @@ public class DelayedCommand extends Command implements CommandRunner{
 		}
 	}
 	
-	public void stop() {
-		command.stop();
+	public void stopped() {
+		command.stopped();
 	}
 
 	@Override
 	public void commandEnded(Command cmd) {
 		endCommand();
+		oldCallback.commandEnded(cmd);
 	}
 
 	@Override

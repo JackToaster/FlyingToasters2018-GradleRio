@@ -26,11 +26,9 @@ public abstract class OpMode implements CommandScheduler {
 	 * 
 	 * @param bot
 	 *            The robot the command is running in
-	 * @param name
-	 *            the name of the opmode.
 	 */
 	public OpMode(Robot bot) {
-		commands = new ArrayList<Command>();
+		commands = new ArrayList<>();
 		robot = bot;
 	}
 

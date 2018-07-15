@@ -7,13 +7,22 @@ package org.theflyingtoasters.toaster_commands;
  *
  */
 public abstract class Command {
+
+    /**
+     * Command behavior that does nothing.
+     */
+    protected static final CommandBehavior NONE = scheduler -> {};
+
+
+
 	/**
 	 * the callback to call upon starting/ending
 	 */
-	private CommandBehavior start;
-	private CommandBehavior end;
-	
-	/**
+	private CommandBehavior start = NONE;
+	private CommandBehavior end = NONE;
+
+
+    /**
 	 * The callback to stop calling the command periodically
 	 */
 	protected CommandRunner callback;
@@ -54,13 +63,16 @@ public abstract class Command {
 	 * called once or never, to stop the command.
 	 */
 	public final void commandStop() {
-		stop();
+		stopped();
 		if(end != null) {
 			end.run(callback.getScheduler());
 		}
 	}
-	
-	public abstract void stop();
+
+    /**
+     * Called when a command gets stopped by the scheduler. This is not run when endCommand is called.
+     */
+	public abstract void stopped();
 	/**
 	 * called when the command ends and calls back. This is used to end the command
 	 * before stop is called.
@@ -84,4 +96,28 @@ public abstract class Command {
 	public CommandScheduler getScheduler() {
 		return callback.getScheduler();
 	}
+
+    public CommandBehavior getStart() {
+        return start;
+    }
+
+    public void setStart(CommandBehavior start) {
+        this.start = start;
+    }
+
+    public CommandBehavior getEnd() {
+        return end;
+    }
+
+    public void setEnd(CommandBehavior end) {
+        this.end = end;
+    }
+
+    public CommandRunner getCallback() {
+        return callback;
+    }
+
+    public void setCallback(CommandRunner callback) {
+        this.callback = callback;
+    }
 }
