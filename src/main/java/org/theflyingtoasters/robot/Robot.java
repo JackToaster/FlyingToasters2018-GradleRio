@@ -3,14 +3,13 @@ package org.theflyingtoasters.robot;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.theflyingtoasters.commands.teleop.*;
+import org.theflyingtoasters.teleop.*;
 import org.theflyingtoasters.hardware.Climber;
 import org.theflyingtoasters.hardware.DriveBase2018;
 import org.theflyingtoasters.hardware.Intake;
 import org.theflyingtoasters.hardware.LED;
 import org.theflyingtoasters.hardware.Lift;
 import org.theflyingtoasters.hardware.PDP;
-import org.theflyingtoasters.toaster_commands.Command;
 import org.theflyingtoasters.toaster_commands.OpMode;
 import org.theflyingtoasters.utilities.Logging;
 

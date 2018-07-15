@@ -1,6 +1,4 @@
-package org.theflyingtoasters.commands.teleop;
-
-import org.theflyingtoasters.commands.teleop.E3D.Axis;
+package org.theflyingtoasters.teleop;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

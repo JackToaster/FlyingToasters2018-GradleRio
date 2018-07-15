@@ -1,4 +1,4 @@
-package org.theflyingtoasters.commands.teleop;
+package org.theflyingtoasters.teleop;
 import java.util.EnumMap;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;

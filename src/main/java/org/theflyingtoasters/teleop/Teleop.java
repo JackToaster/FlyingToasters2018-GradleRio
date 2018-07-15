@@ -1,4 +1,4 @@
-package org.theflyingtoasters.commands.teleop;
+package org.theflyingtoasters.teleop;
 
 import org.theflyingtoasters.hardware.Intake;
 import org.theflyingtoasters.hardware.Lift;

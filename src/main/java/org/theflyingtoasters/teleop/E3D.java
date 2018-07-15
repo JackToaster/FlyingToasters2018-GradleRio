@@ -1,4 +1,4 @@
-package org.theflyingtoasters.commands.teleop;
+package org.theflyingtoasters.teleop;
 import java.util.EnumMap;
 
 import org.theflyingtoasters.utilities.Coords;
